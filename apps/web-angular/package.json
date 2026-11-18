@@ -1,0 +1,37 @@
+{
+  "name": "web-angular",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "predev": "pnpm --filter @stripe-clone/mock-data sync ../../apps/web-angular/public",
+    "dev": "ng serve --port 4200",
+    "prebuild": "pnpm --filter @stripe-clone/mock-data sync ../../apps/web-angular/public",
+    "build": "ng build",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit"
+  },
+  "private": true,
+  "packageManager": "pnpm@12.4.2",
+  "dependencies": {
+    "@angular/common": "^22.2.0",
+    "@angular/compiler": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/forms": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
+    "@angular/router": "^22.2.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "@angular/cdk": "^22.3.0",
+    "@stripe-clone/domain": "workspace:*",
+    "@stripe-clone/icons": "workspace:*",
+    "@stripe-clone/styles": "workspace:*",
+    "idb-keyval": "6.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.2.7",
+    "@angular/cli": "^22.2.7",
+    "@angular/compiler-cli": "^22.2.0",
+    "typescript": "6.0.3",
+    "@stripe-clone/mock-data": "workspace:*"
+  },
+  "description": "Angular (standalone, signals, zoneless) implementation of the Stripe Dashboard Payments screen."
+}

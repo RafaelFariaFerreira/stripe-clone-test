@@ -1,0 +1,350 @@
+@let payment = this.payment();
+@let details = this.details();
+
+@if (!payment && listLoaded()) {
+  <div class="not-found" role="alert">
+    <h1 class="not-found__title">No such payment</h1>
+    <p class="not-found__text">
+      We couldn't find a payment with ID <code>{{ id() }}</code
+      >. It may have been removed or the link is incorrect.
+    </p>
+    <a routerLink="/payments" class="button button--secondary">Back to payments</a>
+  </div>
+} @else if (!payment) {
+  <!-- Mirrors the live loading state: header placeholders + a spinner per section. -->
+  <article class="detail" aria-busy="true" aria-label="Loading payment">
+    <div class="detail-header">
+      <div>
+        <a routerLink="/payments" class="detail-header__breadcrumb">Transactions</a>
+        <div style="display: flex; align-items: center; height: 36px"><app-skeleton [width]="160" [height]="24" /></div>
+        <app-skeleton [width]="220" />
+      </div>
+    </div>
+    <div class="detail-layout">
+      <div class="detail-layout__main">
+        @for (title of ['Recent activity', 'Payment breakdown', 'Payment method']; track title) {
+          <section>
+            <h2 class="detail-section__title">{{ title }}</h2>
+            <div class="detail-section__body detail-section__loading"><app-spinner /></div>
+          </section>
+        }
+      </div>
+      <div class="detail-layout__aside">
+        @for (title of ['Details', 'Customer', 'Metadata']; track title) {
+          <section>
+            <h2 class="detail-section__title">{{ title }}</h2>
+            <div class="detail-section__body detail-section__loading"><app-spinner /></div>
+          </section>
+        }
+      </div>
+    </div>
+  </article>
+} @else {
+  <article class="detail">
+    <header class="detail-header">
+      <div>
+        <a routerLink="/payments" class="detail-header__breadcrumb">Transactions</a>
+        <h1 class="detail-header__title">
+          <span class="tabular-nums">{{ formatMoney(payment.amount, payment.currency) }}</span>
+          <span class="detail-header__currency">{{ currencyLabel[payment.currency] }}</span>
+          <app-status-badge [status]="payment.status" />
+        </h1>
+        <p class="detail-header__subtitle">
+          Charged to
+          <a class="link" routerLink="/payments" [queryParams]="{ q: payment.customer.email }">{{ payment.customer.email }}</a>
+        </p>
+      </div>
+      <div class="detail-header__actions">
+        <button type="button" class="button button--secondary" [disabled]="!canRefund()">
+          <svg appIcon="refund" [size]="12"></svg><span class="button__label">Refund</span>
+        </button>
+        <button type="button" class="icon-button icon-button--outlined" aria-label="More actions">
+          <svg appIcon="more-horizontal" [size]="12"></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="detail-layout">
+      <div class="detail-layout__main">
+        <app-detail-section title="Recent activity" [loading]="detailsLoading()" [failed]="detailsFailed()">
+          <button sectionAction type="button" class="button button--secondary">Add note</button>
+          @if (details) {
+            <ol>
+              @for (entry of details.timeline; track entry.label + entry.at) {
+                <li class="timeline__item" [attr.data-current]="entry.current">
+                  <span class="timeline__label">{{ entry.label }}</span>
+                  <time class="timeline__date" tabindex="0" [attr.datetime]="entry.at" [appTooltip]="formatFullDate(entry.at)">{{
+                    formatTableDate(entry.at)
+                  }}</time>
+                </li>
+              }
+            </ol>
+          }
+        </app-detail-section>
+
+        <app-detail-section title="Payment breakdown" [loading]="detailsLoading()" [failed]="detailsFailed()">
+          @if (details) {
+            <div class="breakdown__row">
+              <span>Payment amount</span>
+              <span class="tabular-nums">{{ formatMoneyWithCode(payment.amount, payment.currency) }}</span>
+            </div>
+            @if (payment.amountRefunded) {
+              <div class="breakdown__row breakdown__row--fee">
+                <span>Refunded</span>
+                <span class="tabular-nums">- {{ formatMoneyWithCode(payment.amountRefunded, payment.currency) }}</span>
+              </div>
+            }
+            <div class="breakdown__row breakdown__row--fee">
+              <span class="breakdown__label">Stripe processing fees <a class="breakdown__learn-more" href="#fees">Learn more</a></span>
+              <span class="tabular-nums">- {{ formatMoneyWithCode(details.fee, payment.currency) }}</span>
+            </div>
+            <div class="breakdown__row">
+              <span>Net amount</span>
+              <span class="tabular-nums">{{ formatMoneyWithCode(details.net, payment.currency) }}</span>
+            </div>
+          }
+        </app-detail-section>
+
+        <app-detail-section title="Payment method" [loading]="detailsLoading()" [failed]="detailsFailed()">
+          @if (details) {
+            <div class="disclosure">
+              <button
+                type="button"
+                class="disclosure__summary"
+                aria-controls="payment-method-details"
+                [attr.aria-expanded]="methodExpanded()"
+                (click)="methodExpanded.set(!methodExpanded())"
+              >
+                <svg appIcon="chevron-right" [size]="8"></svg>
+                <app-payment-method-cell [method]="payment.paymentMethod" />
+                @if (expires(); as expires) {
+                  <span class="disclosure__meta">{{ expires.label }}</span>
+                }
+              </button>
+              @if (methodExpanded()) {
+                <div id="payment-method-details" class="disclosure__content">
+                  <dl class="key-value-list key-value-list--grid">
+                    <dt class="key-value__label">ID</dt>
+                    <dd class="key-value__value">{{ details.paymentMethodId }}</dd>
+                    <dt class="key-value__label">Type</dt>
+                    <dd class="key-value__value">{{ describePaymentMethod(payment.paymentMethod) }}</dd>
+                    <dt class="key-value__label">Number</dt>
+                    <dd class="key-value__value"><app-card-last4 [last4]="payment.paymentMethod.last4" /></dd>
+                    <dt class="key-value__label">Fingerprint</dt>
+                    <dd class="key-value__value">{{ details.fingerprint }}</dd>
+                    @if (expires(); as expires) {
+                      <dt class="key-value__label">Expires</dt>
+                      <dd class="key-value__value">{{ expires.numeric }}</dd>
+                    }
+                    <dt class="key-value__label">Issuer</dt>
+                    <dd class="key-value__value">{{ details.issuer }}</dd>
+                    <dt class="key-value__label">Origin</dt>
+                    <dd class="key-value__value">{{ details.origin }}</dd>
+                    <dt class="key-value__label">CVC check</dt>
+                    <dd class="key-value__value">{{ details.cvcCheck }}</dd>
+                  </dl>
+                </div>
+              }
+            </div>
+            <div class="enabled-methods">
+              <p class="enabled-methods__label">Enabled payment methods</p>
+              <div class="enabled-methods__list">
+                <span class="enabled-methods__item" title="Cards"><svg appIcon="card-generic" [size]="16" label="Cards"></svg></span>
+                <span class="enabled-methods__item" title="Link"><svg appIcon="wallet-link" [size]="16" label="Link"></svg></span>
+              </div>
+            </div>
+          }
+        </app-detail-section>
+
+        <app-detail-section title="Tax calculation">
+          <div class="empty-box empty-box--tall">
+            <div>
+              <p>No tax rate applied.</p>
+              <p>
+                <svg appIcon="lightbulb" [size]="12"></svg> Calculate tax automatically on future invoices using Stripe Tax.
+                <a class="link" href="#tax">Start now</a>
+              </p>
+            </div>
+          </div>
+        </app-detail-section>
+
+        <app-detail-section title="Risk analysis">
+          <nav class="tabs tabs--compact" aria-label="Risk analysis">
+            <a class="tabs__tab" aria-current="page" href="#risk-factors">Risk factors</a>
+            <a class="tabs__tab" href="#risk-scores">Risk scores</a>
+          </nav>
+          <p class="note" style="margin-top: 12px">Risk insights are only available for live data.</p>
+        </app-detail-section>
+
+        <app-detail-section title="Related payments">
+          <p class="note note--divided">No related payments in the last 6 months</p>
+        </app-detail-section>
+
+        <app-detail-section title="Related objects" [loading]="detailsLoading()" [failed]="detailsFailed()">
+          @if (details) {
+            <dl class="key-value-list">
+              <div>
+                <dt class="key-value__label">Latest charge</dt>
+                <dd class="key-value__value"><app-copyable-id [id]="details.chargeId" display="full" variant="plain" /></dd>
+              </div>
+            </dl>
+          }
+        </app-detail-section>
+
+        <app-detail-section title="Receipt history">
+          <span sectionAction style="display: flex; gap: 8px">
+            <button type="button" class="button button--secondary">View receipt</button>
+            <button type="button" class="button button--secondary">Send receipt</button>
+          </span>
+          <div class="empty-box">No receipts sent</div>
+        </app-detail-section>
+
+        <!-- Below the fold: rendered when scrolled into view. -->
+        @defer (on viewport) {
+          <app-detail-section title="Events" [loading]="detailsLoading()" [failed]="detailsFailed()">
+            @if (details) {
+              <ul>
+                @for (event of details.events; track event.id) {
+                  <li class="activity-list__item">
+                    <span class="activity-list__title">{{ event.description }}</span>
+                    <time class="activity-list__time" [attr.datetime]="event.at">{{ formatEventTimestamp(event.at) }}</time>
+                  </li>
+                }
+              </ul>
+            }
+          </app-detail-section>
+
+          <app-detail-section title="Logs" [loading]="detailsLoading()" [failed]="detailsFailed()">
+            @if (details) {
+              <ul>
+                @for (log of details.logs; track log.id) {
+                  <li class="activity-list__item">
+                    <span class="activity-list__title activity-list__title--wide">
+                      {{ log.method }} {{ log.path }}
+                      <app-badge [tone]="log.status < 300 ? 'neutral' : 'danger'"
+                        >{{ log.status }} {{ log.status < 300 ? 'OK' : 'ERR' }}</app-badge
+                      >
+                    </span>
+                    <time class="activity-list__time" [attr.datetime]="log.at">{{ formatEventTimestamp(log.at) }}</time>
+                  </li>
+                }
+              </ul>
+            }
+          </app-detail-section>
+        } @placeholder {
+          <div style="min-height: 240px" aria-hidden="true"></div>
+        }
+      </div>
+
+      <aside class="detail-layout__aside" aria-label="Payment summary">
+        <app-detail-section title="Details" [loading]="detailsLoading()" [failed]="detailsFailed()">
+          @if (details) {
+            <dl class="key-value-list">
+              <div>
+                <dt class="key-value__label">Payment ID</dt>
+                <dd class="key-value__value"><app-copyable-id [id]="payment.id" display="full" variant="plain" /></dd>
+              </div>
+              <div>
+                <dt class="key-value__label">Payment method</dt>
+                <dd class="key-value__value">
+                  <span class="payment-method">
+                    {{ payment.paymentMethod.brand ? brandLabel[payment.paymentMethod.brand] : payment.paymentMethod.bankName }}
+                    <app-card-last4 [last4]="payment.paymentMethod.last4" />
+                  </span>
+                </dd>
+              </div>
+              <div>
+                <dt class="key-value__label">Risk level</dt>
+                <dd class="key-value__value">
+                  <span class="key-value__stack">
+                    <app-badge [tone]="riskBadge().tone">{{ riskBadge().label }}</app-badge>
+                    <a class="link" href="#risk-docs">View docs</a>
+                  </span>
+                </dd>
+              </div>
+              <div>
+                <dt class="key-value__label">Description</dt>
+                <dd class="key-value__value">
+                  {{ payment.description }}
+                  <a class="link" href="#edit-description">Edit <svg appIcon="edit" [size]="12"></svg></a>
+                </dd>
+              </div>
+              <div>
+                <dt class="key-value__label">Statement descriptor</dt>
+                <dd class="key-value__value">{{ details.statementDescriptor }}</dd>
+              </div>
+              @if (details.fundsAvailableAt; as fundsAvailableAt) {
+                <div>
+                  <dt class="key-value__label">Funds available</dt>
+                  <dd class="key-value__value">
+                    <span class="key-value__stack">
+                      <time class="timeline__date" [attr.datetime]="fundsAvailableAt">{{ formatTableDate(fundsAvailableAt) }}</time>
+                      <a class="link" href="#balances">View balances</a>
+                    </span>
+                  </dd>
+                </div>
+              }
+              <div>
+                <dt class="key-value__label">Last updated</dt>
+                <dd class="key-value__value">
+                  <time class="timeline__date" [attr.datetime]="details.updatedAt">{{ formatTableDate(details.updatedAt) }}</time>
+                </dd>
+              </div>
+            </dl>
+          }
+        </app-detail-section>
+
+        <app-detail-section title="Customer">
+          <dl class="key-value-list">
+            <div>
+              <dt class="key-value__label">ID</dt>
+              <dd class="key-value__value">
+                <a class="link" href="#customer">{{ payment.customer.id }}</a>
+              </dd>
+            </div>
+            <div>
+              <dt class="key-value__label">Name</dt>
+              <dd class="key-value__value">{{ payment.customer.name ?? '-' }}</dd>
+            </div>
+            <div>
+              <dt class="key-value__label">Description</dt>
+              <dd class="key-value__value">-</dd>
+            </div>
+            <div>
+              <dt class="key-value__label">Email</dt>
+              <dd class="key-value__value"><app-copyable-id [id]="payment.customer.email" display="full" variant="plain" /></dd>
+            </div>
+            <div>
+              <dt class="key-value__label">Phone</dt>
+              <dd class="key-value__value">-</dd>
+            </div>
+            <div>
+              <dt class="key-value__label">Country</dt>
+              <dd class="key-value__value">{{ details?.origin ?? '-' }}</dd>
+            </div>
+          </dl>
+        </app-detail-section>
+
+        <app-detail-section title="Metadata" [loading]="detailsLoading()" [failed]="detailsFailed()">
+          <button sectionAction type="button" class="icon-button icon-button--sm icon-button--outlined" aria-label="Edit metadata">
+            <svg appIcon="edit" [size]="12"></svg>
+          </button>
+          @if (details) {
+            @if (hasMetadata(details)) {
+              <dl class="key-value-list">
+                @for (entry of details.metadata | keyvalue; track entry.key) {
+                  <div>
+                    <dt class="key-value__label">{{ entry.key }}</dt>
+                    <dd class="key-value__value">{{ entry.value }}</dd>
+                  </div>
+                }
+              </dl>
+            } @else {
+              <div class="empty-box empty-box--tall">No metadata</div>
+            }
+          }
+        </app-detail-section>
+      </aside>
+    </div>
+  </article>
+}

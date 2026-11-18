@@ -349,8 +349,9 @@
   }
   .cell-actions {
     position: sticky;
-    right: 0;
-    padding: 0 var(--space-1);
+    /* Overhang the scroller by 2px (clipped) so sub-pixel gaps never reveal cells underneath. */
+    right: -2px;
+    padding: 0 6px 0 var(--space-1);
     text-align: right;
   }
   .table-scroll[data-overflowing='true'] .cell-actions {

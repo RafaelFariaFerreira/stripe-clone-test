@@ -92,9 +92,7 @@
   }
   .button--secondary:focus-visible,
   .button--primary:focus-visible {
-    box-shadow:
-      var(--shadow-ring),
-      var(--shadow-focus);
+    box-shadow: var(--shadow-ring), var(--shadow-focus);
   }
 
   .button--ghost {
@@ -229,9 +227,7 @@
     --checkbox-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2 7a1 1 0 0 1 1-1h8a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Z'/%3E%3C/svg%3E");
   }
   .checkbox:focus-visible {
-    box-shadow:
-      var(--shadow-control),
-      var(--shadow-focus);
+    box-shadow: var(--shadow-control), var(--shadow-focus);
   }
 
   /* Tooltip ---------------------------------------------------------------
@@ -269,6 +265,19 @@
   }
   .popover:focus-visible {
     box-shadow: var(--shadow-popover);
+  }
+
+  /*
+   * When an overlay engine positions the pane itself (Angular CDK), the surface
+   * must flow inside that pane instead of being fixed to the viewport.
+   */
+  .popover--in-pane,
+  .tooltip--in-pane {
+    position: relative;
+  }
+  .popover--in-pane {
+    max-height: inherit;
+    overflow-y: auto;
   }
 
   /* Filter popover body: header, content, footer with full-width Apply. */
@@ -496,13 +505,7 @@
     display: inline-block;
     height: 12px;
     border-radius: var(--radius-sm);
-    background: linear-gradient(
-        90deg,
-        var(--color-bg-offset) 0%,
-        var(--color-bg-pressed) 50%,
-        var(--color-bg-offset) 100%
-      )
-      0 0 / 200% 100%;
+    background: linear-gradient(90deg, var(--color-bg-offset) 0%, var(--color-bg-pressed) 50%, var(--color-bg-offset) 100%) 0 0 / 200% 100%;
     animation: shimmer 1.4s ease-in-out infinite;
     vertical-align: middle;
   }
