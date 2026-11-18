@@ -199,11 +199,9 @@
   .global-search__input::placeholder {
     color: var(--color-text-secondary);
   }
+  /* Like the Dashboard: the field keeps its grey fill on focus; the caret and open dropdown signal focus. */
   .global-search__input:focus-visible {
-    background: var(--color-bg-page);
-    box-shadow:
-      0 0 0 1px var(--color-brand),
-      var(--shadow-focus);
+    box-shadow: none;
   }
   .global-search__input::-webkit-search-cancel-button {
     display: none;
