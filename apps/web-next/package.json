@@ -1,0 +1,38 @@
+{
+  "name": "web-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "pnpm --filter @stripe-clone/mock-data sync ../../apps/web-next/public",
+    "dev": "next dev --port 3000",
+    "prebuild": "pnpm --filter @stripe-clone/mock-data sync ../../apps/web-next/public",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "@floating-ui/react": "0.27.20",
+    "@stripe-clone/domain": "workspace:*",
+    "@stripe-clone/icons": "workspace:*",
+    "@stripe-clone/styles": "workspace:*",
+    "@tanstack/query-async-storage-persister": "5.108.0",
+    "@tanstack/react-query": "5.108.0",
+    "@tanstack/react-query-persist-client": "5.108.0",
+    "idb-keyval": "6.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "typescript": "6.0.3",
+    "@stripe-clone/mock-data": "workspace:*"
+  },
+  "packageManager": "pnpm@12.4.2",
+  "description": "Next.js (App Router) implementation of the Stripe Dashboard Payments screen."
+}
