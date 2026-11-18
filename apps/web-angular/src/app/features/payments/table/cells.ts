@@ -52,7 +52,9 @@ export class CardLast4 {
         @if (method().wallet; as wallet) {
           <svg [appBrandMark]="walletIcon[wallet]" [label]="walletLabel[wallet]"></svg>
         }
-        @if (method().brand; as brand) {
+        @if (compact() && method().wallet) {
+          <!-- Compact (search results): a single mark, the wallet, like the Dashboard. -->
+        } @else if (method().brand; as brand) {
           <svg [appBrandMark]="brandIcon[brand]" [label]="brandLabel[brand]"></svg>
         } @else {
           <span class="brand-mark brand-mark--bank" role="img" [attr.aria-label]="method().bankName ?? 'Bank account'">
@@ -66,6 +68,8 @@ export class CardLast4 {
 })
 export class PaymentMethodCell {
   readonly method = input.required<PaymentMethod>();
+  /** Single mark (search results). */
+  readonly compact = input(false);
   protected readonly description = computed(() => describePaymentMethod(this.method()));
   protected readonly brandIcon = BRAND_ICON;
   protected readonly brandLabel = CARD_BRAND_LABEL;

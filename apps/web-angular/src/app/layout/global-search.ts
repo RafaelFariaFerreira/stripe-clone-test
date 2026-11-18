@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, computed, e
 import { NavigationEnd, Router } from '@angular/router';
 import {
   applySearchSuggestion,
+  searchResultsHref,
   buildSearchDropdown,
   formatMoney,
   formatShortDay,
@@ -38,7 +39,7 @@ const STATUS_ICON: Readonly<Record<StatusIcon, IconName>> = {
     '(document:keydown)': 'onDocumentKeydown($event)',
   },
   template: `
-    <form role="search" class="global-search" (submit)="$event.preventDefault(); applyToTable(value())">
+    <form role="search" class="global-search" (submit)="$event.preventDefault(); openResults(value())">
       <svg appIcon="search" [size]="12"></svg>
       <label for="global-search" class="sr-only">Search payments</label>
       <input
@@ -183,7 +184,10 @@ export class GlobalSearch {
     // Adopt URL changes made elsewhere (Clear all, back button) without
     // clobbering in-progress typing such as a trailing space.
     const sync = () => {
-      const fromUrl = this.onPayments() ? (this.router.parseUrl(this.router.url).queryParamMap.get('q') ?? '') : '';
+      // The field mirrors the current search: `?query=` on the results page, `?q=` on the Payments list.
+      const params = this.router.parseUrl(this.router.url).queryParamMap;
+      const path = this.router.url.split('?')[0];
+      const fromUrl = path === '/search' ? (params.get('query') ?? '') : this.onPayments() ? (params.get('q') ?? '') : '';
       if (fromUrl !== this.value().trim()) this.value.set(fromUrl);
     };
     const subscription = this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(sync);
@@ -205,7 +209,10 @@ export class GlobalSearch {
   protected clear(): void {
     const hadQuery = Boolean(this.router.parseUrl(this.router.url).queryParamMap.get('q'));
     this.update('');
-    if (hadQuery && this.onPayments()) this.applyToTable('');
+    if (hadQuery && this.onPayments()) {
+      // Clearing the field also clears the table search it mirrors.
+      void this.router.navigate(['/payments'], { queryParams: { q: null, page: null }, queryParamsHandling: 'merge', replaceUrl: true });
+    }
   }
 
   /**
@@ -232,14 +239,18 @@ export class GlobalSearch {
         this.activeIndex.set(-1);
         break;
       case 'apply':
+        this.openResults(option.target);
+        return;
       case 'view-all':
-        this.applyToTable(option.query);
+        this.openResults(option.query);
         return;
       case 'payment':
         this.open.set(false);
+        this.input().nativeElement.blur();
         void this.router.navigate(['/payments', option.payment.id]);
         return;
     }
+    // Completions keep the field focused so the user can keep typing.
     this.input().nativeElement.focus();
   }
 
@@ -260,7 +271,7 @@ export class GlobalSearch {
         event.preventDefault();
         const option = this.activeOption();
         if (this.open() && option) this.select(option);
-        else this.applyToTable(this.value());
+        else this.openResults(this.value());
         break;
       }
       case 'Escape':
@@ -288,14 +299,10 @@ export class GlobalSearch {
     }
   }
 
-  /** Applies the query to the Payments table (`?q=`), keeping the other list filters. */
-  protected applyToTable(query: string): void {
-    const current = this.onPayments() ? this.router.parseUrl(this.router.url).queryParams : {};
-    const queryParams: Record<string, string> = { ...current };
-    if (query.trim()) queryParams['q'] = query.trim();
-    else delete queryParams['q'];
-    delete queryParams['page'];
-    void this.router.navigate(['/payments'], { queryParams, replaceUrl: this.onPayments() });
+  /** Opens the search results page for a query (Enter, "Show only…", "View all results"). */
+  protected openResults(query: string): void {
+    if (!query.trim()) return;
+    void this.router.navigateByUrl(searchResultsHref(query));
     this.open.set(false);
     this.input().nativeElement.blur();
   }

@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { IconButton } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { prefetchPaymentDetails, usePayments } from '@/features/payments/api/queries';
+import { searchResultsHref } from '@stripe-clone/domain';
 import type { IconName } from '@stripe-clone/icons';
 
 const LISTBOX_ID = 'global-search-listbox';
@@ -35,8 +36,9 @@ const STATUS_ICON: Readonly<Record<StatusIcon, IconName>> = {
  *   "View more filters" revealing the rest;
  * - while typing it completes filter keys and values, previews up to 8 matching payments and offers
  *   "Show only payment results for …";
- * - Enter (or "View all results") applies the query to the Payments table through `?q=`, so the
- *   search is bookmarkable; picking a payment opens its details. Press `/` anywhere to focus it.
+ * - Enter or "View all results" opens the search results page (`/search?query=…`), and
+ *   "Show only payment results" opens it scoped to payments (`… is:payment`); picking a payment
+ *   opens its details. Press `/` anywhere to focus it.
  *
  * The dropdown content comes from `buildSearchDropdown` in the shared domain package.
  */
@@ -47,7 +49,9 @@ export function GlobalSearch() {
   const queryClient = useQueryClient();
   const { payments } = usePayments();
 
-  const urlValue = pathname === '/payments' ? (searchParams.get('q') ?? '') : '';
+  // The field mirrors the current search: `?query=` on the results page, `?q=` on the Payments list.
+  const urlValue =
+    pathname === '/search' ? (searchParams.get('query') ?? '') : pathname === '/payments' ? (searchParams.get('q') ?? '') : '';
   const [value, setValue] = useState(urlValue);
   const [syncedUrlValue, setSyncedUrlValue] = useState(urlValue);
   const [open, setOpen] = useState(false);
@@ -88,17 +92,21 @@ export function GlobalSearch() {
     setOpen(true);
   };
 
-  /** Applies the query to the Payments table (`?q=`), keeping the other list filters. */
-  const applyToTable = (query: string) => {
-    const params = new URLSearchParams(pathname === '/payments' ? searchParams.toString() : '');
-    if (query.trim()) params.set('q', query.trim());
-    else params.delete('q');
-    params.delete('page');
-    const url = `/payments${params.size ? `?${params.toString()}` : ''}`;
-    if (pathname === '/payments') router.replace(url, { scroll: false });
-    else router.push(url);
+  /** Opens the search results page for a query (Enter, "Show only…", "View all results"). */
+  const openResults = (query: string) => {
+    if (!query.trim()) return;
+    router.push(searchResultsHref(query));
     setOpen(false);
     inputRef.current?.blur();
+  };
+
+  /** Clearing the field also clears the table search it mirrors. */
+  const clearTableSearch = () => {
+    if (pathname !== '/payments') return;
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('q');
+    params.delete('page');
+    router.replace(`/payments${params.size ? `?${params.toString()}` : ''}`, { scroll: false });
   };
 
   const select = (option: SearchOption) => {
@@ -114,14 +122,18 @@ export function GlobalSearch() {
         setActiveIndex(-1);
         break;
       case 'apply':
+        openResults(option.target);
+        return;
       case 'view-all':
-        applyToTable(option.query);
-        break;
+        openResults(option.query);
+        return;
       case 'payment':
         setOpen(false);
+        inputRef.current?.blur();
         router.push(`/payments/${option.payment.id}`);
-        break;
+        return;
     }
+    // Completions keep the field focused so the user can keep typing.
     inputRef.current?.focus();
   };
 
@@ -141,7 +153,7 @@ export function GlobalSearch() {
       case 'Enter':
         event.preventDefault();
         if (open && activeOption) select(activeOption);
-        else applyToTable(value);
+        else openResults(value);
         break;
       case 'Escape':
         if (open) {
@@ -190,7 +202,7 @@ export function GlobalSearch() {
       className="global-search"
       onSubmit={(event) => {
         event.preventDefault();
-        applyToTable(value);
+        openResults(value);
       }}
     >
       <Icon name="search" size={12} />
@@ -226,7 +238,7 @@ export function GlobalSearch() {
           onMouseDown={(event) => event.preventDefault()}
           onClick={() => {
             update('');
-            if (urlValue) applyToTable('');
+            if (urlValue) clearTableSearch();
             inputRef.current?.focus();
           }}
         />

@@ -1,0 +1,205 @@
+/*
+ * Search results page (/search?query=…). Measured on the live Dashboard at
+ * 1920px: a centered 1280px container, 28px title, Filter (with count) /
+ * sort select / Export on the right, 37px rows, "N items" + Previous/Next.
+ */
+@layer components {
+  .search-page {
+    max-width: var(--layout-detail-max-width);
+    margin: 0 auto;
+    padding: var(--space-2) 0 48px;
+  }
+
+  .search-page__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: 19px;
+  }
+  .search-page__title {
+    font-size: var(--font-size-28);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-36);
+  }
+  .search-page__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  /* "Filter | 2" button. */
+  .filter-count {
+    margin-left: var(--space-1);
+    padding-left: var(--space-2);
+    border-left: 1px solid var(--color-border-default);
+    color: var(--color-text-brand);
+  }
+
+  /* Select styled as a secondary button (the sort control). */
+  .select--button {
+    width: auto;
+    height: var(--size-control-md);
+    padding: 0 26px 0 var(--space-2);
+    box-shadow: var(--shadow-button);
+    color: var(--color-text-default);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .search-page__table {
+    margin-top: 19px;
+  }
+  .data-table--search {
+    min-width: 760px;
+  }
+  .data-table--search .data-table__head-cell,
+  .data-table--search .data-table__cell {
+    height: 37px;
+  }
+  .data-table--search .cell-select {
+    padding-left: var(--space-1);
+  }
+  .col-search-select {
+    width: 26px;
+  }
+  .col-search-amount {
+    /* 73px on the Dashboard; a little wider so 3-digit BRL never truncates with wider fallback fonts. */
+    width: 88px;
+  }
+  .col-search-currency {
+    width: 46px;
+  }
+  .col-search-status {
+    width: 79px;
+  }
+  .col-search-description {
+    width: 300px;
+  }
+  .col-search-customer {
+    width: auto;
+  }
+  .col-search-method {
+    width: 116px;
+  }
+  .col-search-date {
+    width: 138px;
+  }
+  .col-search-actions {
+    width: 40px;
+  }
+  .cell-amount--muted {
+    color: var(--color-text-subdued);
+  }
+  .data-table--search .cell-status {
+    padding-left: 0;
+  }
+  .data-table--search .payment-method__marks {
+    width: auto;
+    margin-left: 0;
+  }
+
+  .search-page__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+    color: var(--color-text-default);
+  }
+  .search-page__pager {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  /* Empty state: icon, title, hint with "clear your filters", support link. */
+  .search-empty {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-1);
+    margin-top: var(--space-8);
+    text-align: center;
+  }
+  .search-empty .icon {
+    margin-bottom: var(--space-2);
+    color: var(--color-text-subdued);
+  }
+  .search-empty__title {
+    font-weight: var(--font-weight-semibold);
+  }
+  .search-empty__text {
+    color: var(--color-text-secondary);
+  }
+  .search-empty__support {
+    margin-top: var(--space-4);
+  }
+
+  /* Filters panel (popover): Clear | Filters | Done, then checkable sections. */
+  .filters-panel {
+    width: 240px;
+    padding-bottom: var(--space-1);
+  }
+  .filters-panel__header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+  .filters-panel__title {
+    font-weight: var(--font-weight-semibold);
+  }
+  .filters-panel__header > :last-child {
+    justify-self: end;
+  }
+  .filters-panel__section {
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+  .filters-panel__section:last-child {
+    border-bottom: 0;
+  }
+  .filters-panel__toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    cursor: pointer;
+  }
+  .filters-panel__body {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3) var(--space-3);
+    background: var(--color-bg-offset);
+  }
+  .filters-panel__flags {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .filters-panel__flag {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+  }
+  .filters-panel__row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    color: var(--color-text-brand);
+  }
+  .filters-panel__row > .input,
+  .filters-panel__row > .select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media (max-width: 767.98px) {
+    .search-page__header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+}

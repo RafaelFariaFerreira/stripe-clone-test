@@ -62,7 +62,12 @@ The Angular build serves the same routes (`/payments`, `/payments/:id`) from its
     matching payments, and "Show only payment results". Free text matches payment ID, email, name,
     last 4 digits, description and amount. Filters can be combined, quoted, negated with `-`, and use
     `>`, `<` or `..` ranges (`status:failed currency:brl`, `amount:10..20 -status:refunded`,
-    `date:"last week"`). Enter applies the query to the table.
+    `date:"last week"`). Picking a payment opens it; Enter, "View all results" or "Show only payment
+    results" open the search results page.
+  - A search results page (`/search?query=…`) modelled on the Dashboard's: "Search results: Payments",
+    a Filters panel (Type with Captured / Disputed / Paid / Refunded, Date, Amount), sort (Most relevant,
+    Newest / Oldest first, Highest / Lowest amount), Export, pagination and its own empty state. Every
+    control writes back into the query (`is:paid date:10/19/2026..today sort:-amount`), so a search is a link.
 - **Shareable state:** every filter, sort and page lives in the URL.
 - **States:** loading skeletons that reserve the final layout, an empty state with the Dashboard's copy,
   error states with retry, and an unknown-payment page.

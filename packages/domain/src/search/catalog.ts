@@ -15,7 +15,9 @@ export type SearchFilterKey =
   | 'brand'
   | 'currency'
   | 'name'
-  | 'type';
+  | 'type'
+  /** Ordering of the search results page (`sort:-amount`); never filters. */
+  | 'sort';
 
 export interface SearchFilterDoc {
   key: SearchFilterKey;
@@ -54,7 +56,7 @@ const STATUS_VALUES = (Object.keys(STATUS_META) as PaymentStatus[]).map((status)
 
 /** Completion values for filters with a closed set of values. */
 export const SEARCH_FILTER_VALUES: Readonly<Partial<Record<SearchFilterKey, readonly string[]>>> = {
-  is: ['payment', 'customer', 'refund', 'dispute'],
+  is: ['payment', 'captured', 'disputed', 'paid', 'refunded'],
   status: STATUS_VALUES,
   currency: CURRENCIES,
   brand: ['visa', 'mastercard', 'amex', 'discover'],
@@ -63,7 +65,7 @@ export const SEARCH_FILTER_VALUES: Readonly<Partial<Record<SearchFilterKey, read
   created: ['today', 'yesterday', '"last week"', '"last month"'],
 };
 
-const KEYS = new Set<string>(ALL_SEARCH_FILTERS.map((filter) => filter.key));
+const KEYS = new Set<string>([...ALL_SEARCH_FILTERS.map((filter) => filter.key), 'sort']);
 
 export function isSearchFilterKey(value: string): value is SearchFilterKey {
   return KEYS.has(value);

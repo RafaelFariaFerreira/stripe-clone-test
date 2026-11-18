@@ -40,8 +40,9 @@ test.describe('Search bar', () => {
     for (const text of await results.allInnerTexts()) expect(text).toContain('R$');
 
     await search.press('Enter');
-    await expect.poll(() => new URL(page.url()).searchParams.get('q')).toBe('status:failed currency:brl');
-    const badges = await page.locator('tbody .badge').allInnerTexts();
+    await expect(page).toHaveURL(/\/search\?/);
+    await expect.poll(() => new URL(page.url()).searchParams.get('query')).toBe('status:failed currency:brl');
+    const badges = await page.locator('.data-table--search tbody .badge').allInnerTexts();
     expect(new Set(badges.map((badge) => badge.trim()))).toEqual(new Set(['Failed']));
   });
 

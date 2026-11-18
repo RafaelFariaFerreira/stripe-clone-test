@@ -33,12 +33,14 @@ const WALLET_ICON: Readonly<Record<WalletType, IconName>> = {
 };
 
 /** Wallet mark (if any) + card brand mark, right-aligned, then `•••• 4242`. */
-export function PaymentMethodCell({ method }: { method: PaymentMethod }) {
+export function PaymentMethodCell({ method, compact = false }: { method: PaymentMethod; compact?: boolean }) {
+  // Compact (search results): a single mark, the wallet when there is one, like the Dashboard.
+  const showBrand = !(compact && method.wallet);
   return (
     <span className="payment-method" title={describePaymentMethod(method)}>
       <span className="payment-method__marks">
         {method.wallet ? <BrandMark name={WALLET_ICON[method.wallet]} label={WALLET_LABEL[method.wallet]} /> : null}
-        {method.brand ? (
+        {!showBrand ? null : method.brand ? (
           <BrandMark name={BRAND_ICON[method.brand]} label={CARD_BRAND_LABEL[method.brand]} />
         ) : (
           <span className="brand-mark brand-mark--bank" role="img" aria-label={method.bankName ?? 'Bank account'}>

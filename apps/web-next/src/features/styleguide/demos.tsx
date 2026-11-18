@@ -1,7 +1,9 @@
 'use client';
 
 import {
+  clearSearchFilters,
   SUGGESTED_SEARCH_FILTERS,
+  writeSearchFilterPanel,
   sortPayments,
   STATUS_META,
   toggleSort,
@@ -25,6 +27,7 @@ import { StatusCards } from '@/features/payments/components/status-cards';
 import { CopyableId, CreatedCell, PaymentMethodCell } from '@/features/payments/components/table/cells';
 import { PaymentsTable, PaymentsTableSkeleton } from '@/features/payments/components/table/payments-table';
 import { DEFAULT_VISIBLE_COLUMNS } from '@/features/payments/columns';
+import { FiltersPanel } from '@/features/search/components/filters-panel';
 import { useHydrated } from '@/lib/use-hydrated';
 import styles from './styleguide.module.css';
 
@@ -265,6 +268,38 @@ function SearchDemo() {
   );
 }
 
+/** Filters panel (interactive, writes the resulting query below) and the results empty state. */
+function SearchResultsDemo() {
+  // The panel reads the current date: mount it after hydration (it can't run while prerendering).
+  return useHydrated() ? <SearchResultsDemoContent /> : <Skeleton width={240} height={120} />;
+}
+
+function SearchResultsDemoContent() {
+  const [query, setQuery] = useState('status:failed is:payment');
+  return (
+    <div className={styles.demoRow} style={{ alignItems: 'flex-start', gap: 32 }}>
+      <div className="popover popover--in-pane">
+        <FiltersPanel
+          key={query}
+          query={query}
+          onApply={(panel) => setQuery(writeSearchFilterPanel(query, panel))}
+          onClear={() => setQuery(clearSearchFilters(query))}
+        />
+      </div>
+      <div style={{ display: 'grid', gap: 16, minWidth: 260 }}>
+        <p className={styles.muted}>
+          Resulting query: <code>{query}</code>
+        </p>
+        <div className="search-empty" style={{ marginTop: 0 }}>
+          <Icon name="search" size={16} />
+          <p className="search-empty__title">No search results found</p>
+          <p className="search-empty__text">Please try again with a different query or clear your filters</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function StatusCardsDemo() {
   const [view, setView] = useState<PaymentsView>('all');
   return <StatusCards active={view} onSelect={setView} />;
@@ -455,6 +490,8 @@ export function ComponentDemo({ id, iconNames }: { id: string; iconNames: readon
       return <FilterPillDemo />;
     case 'search':
       return <SearchDemo />;
+    case 'search-results':
+      return <SearchResultsDemo />;
     case 'status-cards':
       return <StatusCardsDemo />;
     case 'tabs-banner':

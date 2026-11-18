@@ -59,15 +59,21 @@ test.describe('Payments list', () => {
   test('searches by email and by last 4 digits', async ({ page }) => {
     await openPayments(page);
     const email = (await rows(page).first().locator('td').nth(6).innerText()).trim();
+    // The table search is part of the URL state (`?q=`)…
+    await openPayments(page, `?q=${encodeURIComponent(email)}`);
+    for (const cell of await page.locator('tbody tr td:nth-child(7)').allInnerTexts()) expect(cell.trim()).toBe(email);
+
+    // …and the search bar opens the results page for the same query.
     const search = page.getByRole('combobox', { name: 'Search payments' });
     await search.fill(email);
     await search.press('Enter');
-    await expect.poll(() => new URL(page.url()).searchParams.get('q')).toBe(email);
-    for (const cell of await page.locator('tbody tr td:nth-child(7)').allInnerTexts()) expect(cell.trim()).toBe(email);
+    await expect(page).toHaveURL(/\/search\?query=/);
+    await expect.poll(() => new URL(page.url()).searchParams.get('query')).toBe(email);
+    await expect(page.locator('.data-table--search tbody tr').first()).toContainText(email);
 
-    await search.fill('4242');
+    await search.fill('last4:' + (await page.locator('.data-table--search .card-last4').first().innerText()).replace(/\D/g, ''));
     await search.press('Enter');
-    await expect.poll(() => new URL(page.url()).searchParams.get('q')).toBe('4242');
+    await expect(page.locator('.data-table--search tbody tr').first()).toBeVisible();
   });
 
   test('sorts by amount, date and status (multi-column with Shift)', async ({ page }) => {

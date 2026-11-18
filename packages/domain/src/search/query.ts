@@ -186,13 +186,41 @@ function textMatches(payment: Payment, raw: string): boolean {
   );
 }
 
+/**
+ * `is:` selects an object type (`payment`) or a payment flag, like the
+ * Dashboard's Type filter: captured, disputed, paid, refunded.
+ */
+function isMatches(payment: Payment, raw: string): boolean {
+  switch (raw.toLowerCase()) {
+    case 'payment':
+    case 'payments':
+    case 'charge':
+    case 'payment_intent':
+      return true;
+    case 'captured':
+      return ['succeeded', 'partially_refunded', 'refunded', 'disputed'].includes(payment.status);
+    case 'paid':
+      return ['succeeded', 'partially_refunded', 'disputed'].includes(payment.status);
+    case 'disputed':
+      return payment.status === 'disputed';
+    case 'refunded':
+      return payment.status === 'refunded' || payment.status === 'partially_refunded';
+    default:
+      // Other object types (customer, invoice…) are not payments.
+      return false;
+  }
+}
+
 function termMatches(payment: Payment, term: SearchTerm, now: Date): boolean {
   const value = term.value;
   switch (term.field) {
     case null:
       return textMatches(payment, value);
     case 'is':
-      return ['payment', 'payments', 'charge', 'payment_intent'].includes(value.toLowerCase());
+      return isMatches(payment, value);
+    case 'sort':
+      // Ordering only (search results page), never filters.
+      return true;
     case 'last4':
       return payment.paymentMethod.last4.startsWith(value);
     case 'email':

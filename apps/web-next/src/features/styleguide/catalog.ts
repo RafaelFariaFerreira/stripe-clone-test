@@ -219,6 +219,31 @@ export const COMPONENTS: readonly ComponentDoc[] = [
     a11y: 'role="combobox" with aria-expanded / aria-activedescendant over a role="listbox"; ArrowUp/Down, Enter, Escape, Tab; "/" focuses it. Highlight follows keyboard or real pointer movement.',
   },
   {
+    id: 'search-results',
+    name: 'Search results page',
+    group: 'Payments',
+    summary:
+      'Full-page results at /search?query=…: title, Filter (count of active sections) with the Filters panel (Type, Date, Amount), sort select and Export, a 37px-row results table, "N items" with Previous / Next, and an empty state. Every control rewrites the query text (is:, date:, amount:, sort:) through writeSearchFilterPanel / withSearchSort.',
+    react: {
+      importPath: "import { SearchResultsView } from '@/features/search/components/search-results-view';",
+      usage: '// Route: app/(dashboard)/search/page.tsx\n<SearchResultsView />',
+    },
+    angular: { selector: 'app-search-results-page', usage: "// Route: { path: 'search', loadComponent: … }" },
+    classes: [
+      '.search-page',
+      '.search-page__header',
+      '.filter-count',
+      '.select--button',
+      '.data-table--search',
+      '.cell-amount--muted',
+      '.filters-panel',
+      '.search-empty',
+    ],
+    states: ['loading', 'results', 'empty ("No search results found")', 'filters panel open', 'sorted'],
+    props: [],
+    a11y: 'Sortable Amount and Date headers expose aria-sort; the Filters popover is a focus-trapped dialog; the item count is announced politely.',
+  },
+  {
     id: 'status-cards',
     name: 'StatusCards',
     group: 'Payments',

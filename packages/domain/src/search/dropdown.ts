@@ -1,13 +1,15 @@
 import type { Payment } from '../types';
 import type { SearchFilterDoc } from './catalog';
 import { searchPayments } from './query';
+import { scopeToPayments } from './results';
 import { getSearchSuggestions, type SearchValueSuggestion } from './suggest';
 
 /** Every selectable row of the search dropdown. */
 export type SearchOption =
   | { id: string; kind: 'filter'; filter: SearchFilterDoc }
   | { id: string; kind: 'value'; suggestion: SearchValueSuggestion }
-  | { id: string; kind: 'apply'; query: string }
+  /** "Show only payment results for …": `query` is shown, `target` (scoped to payments) is opened. */
+  | { id: string; kind: 'apply'; query: string; target: string }
   | { id: string; kind: 'payment'; payment: Payment }
   | { id: string; kind: 'toggle-filters'; expanded: boolean }
   | { id: string; kind: 'view-all'; query: string };
@@ -56,7 +58,7 @@ export function buildSearchDropdown(
     return { sections, footer, options: [...sections.flatMap((section) => section.options), footer] };
   }
 
-  sections.push({ heading: null, options: [{ id: 'search-apply', kind: 'apply', query }], divider: true });
+  sections.push({ heading: null, options: [{ id: 'search-apply', kind: 'apply', query, target: scopeToPayments(query) }], divider: true });
 
   if (suggestions.values.length) {
     sections.push({

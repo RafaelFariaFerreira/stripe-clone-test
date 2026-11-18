@@ -3,11 +3,24 @@ import type { Payment } from '../types';
 import {
   applySearchSuggestion,
   buildSearchDropdown,
+  clearSearchFilters,
+  countSearchFilters,
+  emptySearchFilterPanel,
+  getSearchSort,
   getSearchSuggestions,
+  isUncollected,
   matchesSearch,
   parseSearch,
+  readSearchFilterPanel,
+  scopeToPayments,
+  searchAllPayments,
   searchPayments,
+  searchResultsHref,
+  searchResultsPage,
+  toggleSearchSort,
   tokenizeSearch,
+  withSearchSort,
+  writeSearchFilterPanel,
 } from '../index';
 
 const NOW = new Date('2026-11-18T15:00:00');
@@ -159,5 +172,79 @@ describe('dropdown model', () => {
     const results = buildSearchDropdown('status:failed', rows, false, NOW);
     const payments = results.options.filter((option) => option.kind === 'payment');
     expect(payments.map((option) => option.kind === 'payment' && option.payment.id)).toEqual(['pi_b']);
+  });
+});
+
+describe('search results page', () => {
+  const rows = [
+    payment({ id: 'pi_low', amount: 500, created: '2026-11-18T09:00:00' }),
+    payment({ id: 'pi_high', amount: 9900, created: '2026-11-10T09:00:00' }),
+    payment({ id: 'pi_failed', amount: 2000, status: 'failed', created: '2026-11-17T09:00:00' }),
+    payment({ id: 'pi_refunded', amount: 3000, status: 'refunded', created: '2026-10-01T09:00:00' }),
+  ];
+  const ids = (query: string) => searchAllPayments(rows, query, NOW).map((row) => row.id);
+
+  it('writes and reads the sort term', () => {
+    expect(withSearchSort('status:failed', 'amount_desc')).toBe('status:failed sort:-amount');
+    expect(withSearchSort('status:failed sort:-amount', 'relevance')).toBe('status:failed');
+    expect(getSearchSort('x sort:created')).toBe('oldest');
+    expect(toggleSearchSort('x sort:-amount', 'amount')).toBe('x sort:amount');
+    expect(ids('is:payment sort:-amount')).toEqual(['pi_high', 'pi_refunded', 'pi_failed', 'pi_low']);
+    expect(ids('is:payment sort:created')).toEqual(['pi_refunded', 'pi_high', 'pi_failed', 'pi_low']);
+  });
+
+  it('supports the Type flags', () => {
+    expect(ids('is:payment is:paid')).toEqual(['pi_low', 'pi_high']);
+    expect(ids('is:refunded')).toEqual(['pi_refunded']);
+    expect(ids('is:captured sort:-amount')).toEqual(['pi_high', 'pi_refunded', 'pi_low']);
+    expect(ids('is:customer')).toEqual([]);
+    expect(ids('sort:-amount')).toEqual([]);
+  });
+
+  it('round-trips the Filters panel through the query', () => {
+    const panel = emptySearchFilterPanel();
+    panel.type = { enabled: true, flags: ['paid'] };
+    panel.date = { ...panel.date, enabled: true, operator: 'last', amount: 30, unit: 'days' };
+    panel.amount = { enabled: true, operator: 'between', value: '10', valueTo: '20' };
+    const query = writeSearchFilterPanel('status:failed sort:-amount', panel, NOW);
+    expect(query).toBe('status:failed is:payment is:paid date:10/19/2026..today amount:10..20 sort:-amount');
+    expect(countSearchFilters(query)).toBe(3);
+
+    const read = readSearchFilterPanel(query, NOW);
+    expect(read.type).toEqual({ enabled: true, flags: ['paid'] });
+    expect(read.date).toMatchObject({ enabled: true, operator: 'last', amount: 30, unit: 'days' });
+    expect(read.amount).toMatchObject({ enabled: true, operator: 'between', value: '10', valueTo: '20' });
+
+    expect(clearSearchFilters(query)).toBe('status:failed sort:-amount');
+    expect(
+      writeSearchFilterPanel(
+        'jenny',
+        { ...emptySearchFilterPanel(), date: { ...panel.date, enabled: false, operator: 'before', to: '2026-11-17' } },
+        NOW,
+      ),
+    ).toBe('jenny');
+    const before = writeSearchFilterPanel(
+      'jenny',
+      { ...emptySearchFilterPanel(), date: { ...panel.date, enabled: true, operator: 'before', to: '2026-11-17' } },
+      NOW,
+    );
+    expect(before).toBe('jenny date:<11/18/2026');
+    expect(readSearchFilterPanel(before, NOW).date).toMatchObject({ operator: 'before', to: '2026-11-17' });
+  });
+
+  it('scopes "Show only payment results" to payments and builds links', () => {
+    expect(scopeToPayments('status:failed')).toBe('status:failed is:payment');
+    expect(scopeToPayments('status:failed is:payment')).toBe('status:failed is:payment');
+    expect(searchResultsHref('status:failed is:payment')).toBe('/search?query=status%3Afailed%20is%3Apayment');
+    expect(buildSearchDropdown('status:failed', rows, false, NOW).options[0]).toMatchObject({
+      kind: 'apply',
+      target: 'status:failed is:payment',
+    });
+  });
+
+  it('paginates results and flags uncollected payments', () => {
+    expect(searchResultsPage(rows, 'is:payment', 1, NOW)).toMatchObject({ total: 4, rangeStart: 1, rangeEnd: 4 });
+    expect(isUncollected(rows[2]!)).toBe(true);
+    expect(isUncollected(rows[0]!)).toBe(false);
   });
 });

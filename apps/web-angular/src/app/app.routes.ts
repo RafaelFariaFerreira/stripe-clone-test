@@ -9,6 +9,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/payments/payments-page').then((m) => m.PaymentsPage),
   },
   {
+    path: 'search',
+    title: 'Search – Transactions',
+    loadComponent: () => import('./features/search/search-results-page').then((m) => m.SearchResultsPage),
+  },
+  {
     path: 'payments/:id',
     title: 'Payment details – Transactions',
     loadComponent: () => import('./features/payment-details/payment-details-page').then((m) => m.PaymentDetailsPage),
