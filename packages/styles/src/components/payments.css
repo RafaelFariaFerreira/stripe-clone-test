@@ -263,7 +263,9 @@
     font-size: var(--font-size-12);
     font-weight: var(--font-weight-semibold);
     line-height: var(--line-height-20);
-    overflow: hidden;
+    /* Clip long labels, but let the resize border's glow paint past the edge. */
+    overflow: clip;
+    overflow-clip-margin: 6px;
     text-overflow: ellipsis;
     white-space: nowrap;
     vertical-align: middle;
@@ -392,7 +394,8 @@
    * </th>
    * The resizer is always rendered (so showing it never causes a reflow); only
    * its color changes: transparent → visible after the pointer rests on the
-   * header for 2s (`data-show-resizers` on the table), brand while dragging.
+   * header for 2s (`data-show-resizers` on the table); hovering it lights it
+   * in the link color with a soft glow, and it stays lit while dragging.
    */
   .data-table__head-cell {
     position: relative;
@@ -417,15 +420,22 @@
     width: 1px;
     height: 100%;
     background: transparent;
-    transition: background-color var(--motion-fast) var(--motion-easing);
+    transition:
+      background-color var(--motion-base) var(--motion-easing),
+      box-shadow var(--motion-base) var(--motion-easing);
   }
   .data-table[data-show-resizers='true'] .column-resizer::before {
     background: var(--color-border-default);
   }
-  .data-table[data-show-resizers='true'] .column-resizer:hover::before,
+  /*
+   * Hovering a border lights it in the link color with a soft glow (a one-off
+   * fade in, no pulse); leaving it fades back out.
+   */
+  .column-resizer:hover::before,
   .column-resizer[data-active='true']::before,
   .column-resizer:focus-visible::before {
-    background: var(--color-brand);
+    background: var(--color-text-brand);
+    box-shadow: 0 0 4px 1px color-mix(in srgb, var(--color-text-brand) 45%, transparent);
   }
   .column-resizer:focus-visible {
     box-shadow: none;

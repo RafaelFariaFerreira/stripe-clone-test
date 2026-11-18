@@ -35,6 +35,23 @@ test.describe('Payments table columns', () => {
     expect(await header(page, 'Description').boundingBox()).toEqual(before);
   });
 
+  test('a hovered border lights up in the link color with a glow, and turns off on leave', async ({ page }) => {
+    await openPayments(page);
+    const handle = header(page, 'Description').locator('.column-resizer');
+    const line = () =>
+      handle.evaluate((element) => {
+        const style = getComputedStyle(element, '::before');
+        return { color: style.backgroundColor, glow: style.boxShadow };
+      });
+    const box = (await handle.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await expect.poll(async () => (await line()).color).toBe('rgb(83, 58, 253)');
+    expect((await line()).glow).not.toBe('none');
+
+    await page.mouse.move(box.x + box.width / 2, box.y + 200);
+    await expect.poll(async () => (await line()).color).toBe('rgba(0, 0, 0, 0)');
+  });
+
   test('dragging a border resizes only that column', async ({ page }) => {
     await openPayments(page);
     const description = header(page, 'Description');
