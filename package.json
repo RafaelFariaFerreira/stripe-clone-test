@@ -1,0 +1,22 @@
+{
+  "name": "stripe-payments-clone",
+  "private": true,
+  "description": "Pixel-faithful rebuild of the Stripe Dashboard Payments screen in Next.js and Angular, sharing one design system and domain layer.",
+  "packageManager": "pnpm@12.4.2",
+  "engines": {
+    "node": ">=24.15.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev:next": "turbo run dev --filter=web-next",
+    "dev:angular": "turbo run dev --filter=web-angular",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "data": "pnpm --filter @stripe-clone/mock-data generate"
+  },
+  "devDependencies": {
+    "turbo": "2.11.13",
+    "typescript": "6.0.3"
+  }
+}

@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.next/
+out/
+.angular/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts
+
+# Mock data copied into each app at dev/build time (source of truth: packages/mock-data/data)
+apps/*/public/data/
+
+# Tests
+coverage/
+test-results/
+playwright-report/
+
+# Environment and OS files
+.env*
+!.env.example
+.DS_Store
+*.log

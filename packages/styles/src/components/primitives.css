@@ -1,0 +1,541 @@
+/*
+ * Primitives: icon, button, badge, checkbox, tooltip, popover, menu and form
+ * controls. Shared by both apps; markup contracts are documented next to each
+ * block.
+ */
+@layer components {
+  /* Icon ---------------------------------------------------------------
+   * <svg class="icon icon--12" viewBox="…" aria-hidden="true">…</svg>
+   */
+  .icon {
+    display: inline-block;
+    vertical-align: middle;
+    fill: currentColor;
+  }
+  .icon--8 {
+    width: 8px;
+    height: 8px;
+  }
+  .icon--12 {
+    width: 12px;
+    height: 12px;
+  }
+  .icon--14 {
+    width: 14px;
+    height: 14px;
+  }
+  .icon--16 {
+    width: 16px;
+    height: 16px;
+  }
+  .icon--20 {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Button --------------------------------------------------------------
+   * <button class="button button--secondary">
+   *   <svg class="icon icon--12">…</svg><span>Export</span>
+   * </button>
+   */
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1-5);
+    height: var(--size-control-md);
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-20);
+    white-space: nowrap;
+    user-select: none;
+    transition:
+      background-color var(--motion-fast) var(--motion-easing),
+      box-shadow var(--motion-fast) var(--motion-easing);
+  }
+  .button:disabled,
+  .button[aria-disabled='true'] {
+    cursor: default;
+  }
+
+  .button--primary {
+    padding: 0 11px;
+    background: var(--color-brand);
+    color: var(--color-text-on-brand);
+  }
+  .button--primary:hover:not(:disabled) {
+    background: var(--color-brand-hover);
+  }
+  .button--primary:active:not(:disabled) {
+    background: var(--color-brand-pressed);
+  }
+
+  .button--secondary {
+    background: var(--color-bg-page);
+    color: var(--color-text-default);
+    box-shadow: var(--shadow-button);
+  }
+  .button--secondary:hover:not(:disabled) {
+    background: var(--color-bg-hover);
+  }
+  .button--secondary:active:not(:disabled) {
+    background: var(--color-bg-pressed);
+  }
+  .button--secondary:disabled {
+    color: var(--color-text-disabled);
+    box-shadow: var(--shadow-ring);
+  }
+  .button--secondary .icon {
+    color: var(--color-text-secondary);
+  }
+  .button--secondary:focus-visible,
+  .button--primary:focus-visible {
+    box-shadow:
+      var(--shadow-ring),
+      var(--shadow-focus);
+  }
+
+  .button--ghost {
+    color: var(--color-text-secondary);
+  }
+  .button--ghost:hover:not(:disabled) {
+    background: var(--color-bg-hover);
+    color: var(--color-text-default);
+  }
+
+  .button--sm {
+    height: 26px;
+    padding: 0 var(--space-2);
+    font-size: var(--font-size-13);
+  }
+
+  .button--block {
+    width: 100%;
+  }
+
+  /* Icon-only button: square, transparent until hovered. */
+  .icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-control-md);
+    height: var(--size-control-md);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+  }
+  .icon-button:hover {
+    background: var(--color-bg-hover);
+    color: var(--color-text-default);
+  }
+  .icon-button--sm {
+    width: var(--size-control-sm);
+    height: var(--size-control-sm);
+  }
+  .icon-button--lg {
+    width: 32px;
+    height: 32px;
+  }
+  .icon-button--outlined {
+    background: var(--color-bg-page);
+    box-shadow: var(--shadow-button);
+  }
+
+  /* Badge ----------------------------------------------------------------
+   * <span class="badge badge--success">Succeeded<svg class="icon icon--12">…</svg></span>
+   */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    height: 20px;
+    padding: 0 5px 0 6px;
+    border: 1px solid;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-16);
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  .badge .icon {
+    width: 12px;
+    height: 12px;
+  }
+  .badge--success {
+    background: var(--color-success-bg);
+    border-color: var(--color-success-border);
+    color: var(--color-success-text);
+  }
+  .badge--danger {
+    background: var(--color-danger-bg);
+    border-color: var(--color-danger-border);
+    color: var(--color-danger-text);
+  }
+  .badge--warning {
+    background: var(--color-warning-bg);
+    border-color: var(--color-warning-border);
+    color: var(--color-warning-text);
+  }
+  .badge--neutral {
+    background: var(--color-neutral-bg);
+    border-color: var(--color-neutral-border);
+    color: var(--color-neutral-text);
+  }
+  .badge--plain {
+    padding: 0 6px;
+  }
+
+  /* Checkbox ------------------------------------------------------------
+   * <input type="checkbox" class="checkbox"> (native, restyled)
+   */
+  .checkbox {
+    appearance: none;
+    position: relative;
+    display: inline-block;
+    width: var(--size-checkbox);
+    height: var(--size-checkbox);
+    margin: 0;
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-page);
+    box-shadow: var(--shadow-control);
+    vertical-align: middle;
+    cursor: pointer;
+  }
+  .checkbox:disabled {
+    background: var(--color-bg-disabled);
+    box-shadow: none;
+    cursor: default;
+  }
+  .checkbox:checked,
+  .checkbox:indeterminate {
+    background: var(--color-brand);
+    box-shadow: 0 0 0 1px var(--color-brand);
+  }
+  .checkbox:checked::after,
+  .checkbox:indeterminate::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-text-on-brand);
+    -webkit-mask: var(--checkbox-mark) center / 12px 12px no-repeat;
+    mask: var(--checkbox-mark) center / 12px 12px no-repeat;
+  }
+  .checkbox:checked {
+    --checkbox-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M9.846 3.801a.929.929 0 0 1 1.37 0 1.076 1.076 0 0 1 0 1.456l-4.64 4.94a.929.929 0 0 1-1.37 0L2.784 7.623a1.076 1.076 0 0 1 0-1.456.929.929 0 0 1 1.37 0L5.89 8.013l3.955-4.212z'/%3E%3C/svg%3E");
+  }
+  .checkbox:indeterminate {
+    --checkbox-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2 7a1 1 0 0 1 1-1h8a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Z'/%3E%3C/svg%3E");
+  }
+  .checkbox:focus-visible {
+    box-shadow:
+      var(--shadow-control),
+      var(--shadow-focus);
+  }
+
+  /* Tooltip ---------------------------------------------------------------
+   * Positioned by the app (fixed coordinates); this only styles the bubble.
+   * <div role="tooltip" class="tooltip" data-placement="top">Copy to clipboard</div>
+   */
+  .tooltip {
+    position: fixed;
+    z-index: 60;
+    max-width: 280px;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-tooltip);
+    box-shadow: var(--shadow-tooltip);
+    color: var(--color-text-inverse);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-16);
+    white-space: nowrap;
+    pointer-events: none;
+    animation: fade-in var(--motion-fast) var(--motion-easing);
+  }
+
+  /* Popover ---------------------------------------------------------------
+   * Floating surface used by filter popovers and menus.
+   */
+  .popover {
+    position: fixed;
+    z-index: 50;
+    min-width: 240px;
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-page);
+    box-shadow: var(--shadow-popover);
+    animation: popover-in var(--motion-base) var(--motion-easing);
+  }
+  .popover:focus-visible {
+    box-shadow: var(--shadow-popover);
+  }
+
+  /* Filter popover body: header, content, footer with full-width Apply. */
+  .filter-panel {
+    display: flex;
+    flex-direction: column;
+    width: 260px;
+  }
+  .filter-panel__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-3) var(--space-2);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-semibold);
+  }
+  .filter-panel__title {
+    flex: 1;
+  }
+  .filter-panel__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: 0 var(--space-3) var(--space-3);
+  }
+  .filter-panel__options {
+    max-height: 248px;
+    margin: 0 calc(-1 * var(--space-3));
+    padding: 0 var(--space-3);
+    overflow-y: auto;
+  }
+  .filter-panel__footer {
+    padding: 0 var(--space-3) var(--space-3);
+  }
+  .filter-panel__row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .filter-panel__hint {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-12);
+    line-height: var(--line-height-16);
+  }
+  .filter-panel__error {
+    color: var(--color-danger-text);
+    font-size: var(--font-size-12);
+    line-height: var(--line-height-16);
+  }
+
+  /* Option row with a checkbox (Status, Payment method, Currency filters). */
+  .check-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 32px;
+    padding: var(--space-1-5) 0;
+    font-size: var(--font-size-14);
+    line-height: var(--line-height-20);
+    cursor: pointer;
+  }
+  .check-option__label {
+    flex: 1;
+  }
+  .check-option__meta {
+    color: var(--color-text-subdued);
+    font-size: var(--font-size-12);
+  }
+
+  /* Preset chips inside the date filter (Today · 7 days · 30 days · Custom). */
+  .segmented {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    padding: 2px;
+    border-radius: var(--radius-md);
+    background: var(--color-bg-offset);
+  }
+  .segmented__option {
+    height: 24px;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-16);
+  }
+  .segmented__option:hover {
+    color: var(--color-text-default);
+  }
+  .segmented__option[aria-pressed='true'] {
+    background: var(--color-bg-page);
+    box-shadow: var(--shadow-control);
+    color: var(--color-text-default);
+  }
+
+  /* Menu ------------------------------------------------------------------ */
+  .menu {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    padding: var(--space-1) 0;
+  }
+  .menu__label {
+    padding: var(--space-2) var(--space-3) var(--space-1);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-16);
+  }
+  .menu__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 32px;
+    padding: var(--space-1-5) var(--space-3);
+    color: var(--color-text-default);
+    font-size: var(--font-size-14);
+    line-height: var(--line-height-20);
+    text-align: left;
+    white-space: nowrap;
+  }
+  .menu__item:hover,
+  .menu__item:focus-visible {
+    background: var(--color-bg-hover);
+    box-shadow: none;
+  }
+  .menu__item--danger {
+    color: var(--color-danger-text);
+  }
+  .menu__item[aria-disabled='true'] {
+    color: var(--color-text-disabled);
+    pointer-events: none;
+  }
+  .menu__divider {
+    height: 1px;
+    margin: var(--space-1) 0;
+    background: var(--color-border-subtle);
+  }
+
+  /* Form controls ------------------------------------------------------- */
+  .input,
+  .select {
+    width: 100%;
+    height: var(--size-control-md);
+    padding: 0 var(--space-2);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: var(--color-bg-page);
+    box-shadow: var(--shadow-control);
+    color: var(--color-text-default);
+    font-size: var(--font-size-14);
+    line-height: var(--line-height-20);
+  }
+  .input::placeholder {
+    color: var(--color-text-subdued);
+  }
+  .input:focus-visible,
+  .select:focus-visible {
+    box-shadow:
+      0 0 0 1px var(--color-brand),
+      var(--shadow-focus);
+  }
+  .input[aria-invalid='true'] {
+    box-shadow: 0 0 0 1px var(--color-danger-text);
+  }
+  .select {
+    appearance: none;
+    padding-right: 28px;
+    background: var(--color-bg-page)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='%23687385'%3E%3Cpath d='M5.47 1.22a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1-1.06 1.06L6 2.81 4.28 4.53a.75.75 0 0 1-1.06-1.06l2.25-2.25Zm-2.25 6.25a.75.75 0 0 1 1.06 0L6 9.19l1.72-1.72a.75.75 0 1 1 1.06 1.06l-2.25 2.25a.75.75 0 0 1-1.06 0L3.22 8.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E")
+      right 8px center / 12px 12px no-repeat;
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+  }
+  .select--sm {
+    width: auto;
+    height: 26px;
+    font-size: var(--font-size-13);
+  }
+
+  /* Input with a leading arrow, as in the Dashboard's filter popovers. */
+  .input-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    color: var(--color-text-subdued);
+  }
+  .input-group > .input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: var(--space-1);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-16);
+  }
+
+  /* Text link ------------------------------------------------------------ */
+  .link {
+    color: var(--color-text-brand);
+    font-weight: var(--font-weight-regular);
+  }
+  .link:hover {
+    color: var(--color-text-default);
+  }
+  .link--strong {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* Spinner and skeleton -------------------------------------------------- */
+  .spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--color-border-default);
+    border-top-color: var(--color-text-subdued);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  .skeleton {
+    display: inline-block;
+    height: 12px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(
+        90deg,
+        var(--color-bg-offset) 0%,
+        var(--color-bg-pressed) 50%,
+        var(--color-bg-offset) 100%
+      )
+      0 0 / 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+    vertical-align: middle;
+  }
+
+  /* Divider used between the banner link and its close button. */
+  .vertical-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--color-border-default);
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes shimmer {
+    from {
+      background-position: 100% 0;
+    }
+    to {
+      background-position: -100% 0;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes popover-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+}

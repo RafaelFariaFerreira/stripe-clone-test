@@ -1,0 +1,147 @@
+/*
+ * Design tokens.
+ *
+ * Values were sampled from the reference screenshot (Stripe Dashboard,
+ * Payments, ~1490 CSS px wide, rendered at 1.375x) and cross-checked against
+ * computed styles of the live Dashboard. See docs/planning/01-style-guide.md.
+ *
+ * Components must only use these custom properties: no raw colors or ad-hoc
+ * shadows outside this file.
+ */
+@layer tokens {
+  :root {
+    color-scheme: light;
+
+    /* Typography -------------------------------------------------------- */
+    --font-family-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+      'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    --font-family-mono: 'Source Code Pro', Menlo, Monaco, Consolas, monospace;
+
+    --font-size-11: 11px;
+    --font-size-12: 12px;
+    --font-size-13: 13px;
+    --font-size-14: 14px;
+    --font-size-16: 16px;
+    --font-size-20: 20px;
+    --font-size-28: 28px;
+
+    --line-height-16: 16px;
+    --line-height-20: 20px;
+    --line-height-24: 24px;
+    --line-height-28: 28px;
+    --line-height-36: 36px;
+
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Text colors ------------------------------------------------------- */
+    --color-text-default: #353a44;
+    --color-text-secondary: #596171;
+    --color-text-subdued: #687385;
+    --color-text-disabled: #a3acba;
+    --color-text-brand: #533afd;
+    --color-text-on-brand: #ffffff;
+    --color-text-inverse: #ffffff;
+
+    /* Surfaces ---------------------------------------------------------- */
+    --color-bg-page: #ffffff;
+    --color-bg-offset: #f5f6f8;
+    --color-bg-hover: #f5f6f8;
+    --color-bg-pressed: #ebeef1;
+    --color-bg-disabled: #ebeef1;
+    --color-bg-tooltip: #353a44;
+    --color-bg-overlay: rgb(53 58 68 / 40%);
+
+    /* Borders ----------------------------------------------------------- */
+    --color-border-default: #d8dee4;
+    --color-border-strong: #c0c8d2;
+    --color-border-subtle: #ebeef1;
+
+    /* Brand ------------------------------------------------------------- */
+    --color-brand: #635bff;
+    --color-brand-hover: #5851ea;
+    --color-brand-pressed: #4b45c6;
+    --color-brand-subtle: #f5f3ff;
+    --color-focus-ring: rgb(99 91 255 / 36%);
+
+    /* Badge tones ------------------------------------------------------- */
+    --color-success-bg: #ecfadf;
+    --color-success-border: #b8ef81;
+    --color-success-text: #376d1c;
+
+    --color-danger-bg: #fcf4f6;
+    --color-danger-border: #f5d4dc;
+    --color-danger-text: #b02b41;
+
+    --color-warning-bg: #fef9da;
+    --color-warning-border: #fcd579;
+    --color-warning-text: #a82c00;
+
+    --color-neutral-bg: #f5f6f8;
+    --color-neutral-border: #d8dee4;
+    --color-neutral-text: #596171;
+
+    /* Misc accents ------------------------------------------------------ */
+    --color-account-logo: #d3c5f7;
+    --color-notification-dot: #0570de;
+
+    /* Spacing (4 px grid) ---------------------------------------------- */
+    --space-0-5: 2px;
+    --space-1: 4px;
+    --space-1-5: 6px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+
+    /* Radii ------------------------------------------------------------- */
+    --radius-xs: 2px;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+    --radius-pill: 9999px;
+
+    /* Elevation --------------------------------------------------------- */
+    --shadow-ring: 0 0 0 1px var(--color-border-default);
+    --shadow-control: 0 0 0 1px var(--color-border-default), 0 1px 1px rgb(0 0 0 / 6%);
+    --shadow-button: 0 0 0 1px var(--color-border-default), 0 1px 1px rgb(0 0 0 / 4%);
+    --shadow-popover: 0 0 0 1px rgb(64 68 82 / 8%), 0 5px 15px rgb(0 0 0 / 12%), 0 15px 35px rgb(48 49 61 / 8%);
+    --shadow-tooltip: 0 2px 6px rgb(0 0 0 / 12%);
+    --shadow-focus: 0 0 0 4px var(--color-focus-ring);
+    --shadow-sticky-column: -8px 0 8px -8px rgb(0 0 0 / 12%);
+
+    /* Layout ------------------------------------------------------------ */
+    --layout-sidebar-width: 235px;
+    --layout-topbar-height: 56px;
+    --layout-gutter: 40px;
+    --layout-gutter-compact: 20px;
+    --layout-detail-max-width: 1280px;
+    --layout-detail-aside-width: 284px;
+
+    /* Component sizes --------------------------------------------------- */
+    --size-control-sm: 24px;
+    --size-control-md: 28px;
+    --size-control-lg: 36px;
+    --size-table-row: 36px;
+    --size-checkbox: 16px;
+    --size-brand-mark: 20px;
+
+    /* Motion ------------------------------------------------------------ */
+    --motion-fast: 120ms;
+    --motion-base: 160ms;
+    --motion-easing: cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --motion-fast: 0ms;
+      --motion-base: 0ms;
+    }
+  }
+}

@@ -1,0 +1,13 @@
+/*
+ * Entry point of the shared design system.
+ * Both apps import this single file; cascade layers keep the order explicit
+ * so app-level overrides (if ever needed) always win.
+ */
+@layer reset, tokens, components, utilities;
+
+@import './tokens.css';
+@import './base.css';
+@import './components/primitives.css';
+@import './components/shell.css';
+@import './components/payments.css';
+@import './components/details.css';

@@ -1,0 +1,25 @@
+{
+  "name": "@stripe-clone/mock-data",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deterministic generator for the Payments mock dataset (list JSON + lazily loaded detail shards).",
+  "type": "module",
+  "files": ["data"],
+  "exports": {
+    "./payments.json": "./data/payments.json",
+    "./data/*": "./data/*"
+  },
+  "scripts": {
+    "generate": "tsx scripts/generate.ts",
+    "sync": "node scripts/sync.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@stripe-clone/domain": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3"
+  }
+}

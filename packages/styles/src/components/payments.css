@@ -1,0 +1,592 @@
+/*
+ * Payments list page: header, tabs, announcement banner, status cards, filter
+ * toolbar, data table and pagination.
+ *
+ * Vertical rhythm (CSS px, measured on the reference):
+ *   top bar 56 → +16 title (36) → +4 tabs (38 + 1 rule) → +23 banner (36)
+ *   → +16 status cards (44) → +16 toolbar (32) → +10 table (header 36, rows 36)
+ */
+@layer components {
+  /* Page header ----------------------------------------------------------- */
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+  }
+  .page-header__title {
+    font-size: var(--font-size-28);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-36);
+  }
+  .page-header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+  }
+
+  /* Tabs ------------------------------------------------------------------ */
+  .tabs {
+    display: flex;
+    gap: var(--space-6);
+    margin-top: var(--space-1);
+    border-bottom: 1px solid var(--color-border-default);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tabs__tab {
+    flex-shrink: 0;
+    padding: var(--space-2) 0;
+    border-bottom: 2px solid transparent;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-20);
+    white-space: nowrap;
+  }
+  .tabs__tab:hover {
+    color: var(--color-text-default);
+  }
+  .tabs__tab[aria-selected='true'],
+  .tabs__tab[aria-current='page'] {
+    border-bottom-color: var(--color-brand);
+    color: var(--color-text-brand);
+  }
+  .tabs__tab:focus-visible {
+    border-radius: var(--radius-xs);
+  }
+  .tabs--compact .tabs__tab {
+    padding: var(--space-1-5) 0;
+  }
+
+  /* Announcement banner ------------------------------------------------------ */
+  .banner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: 36px;
+    margin-top: 23px;
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-2);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-offset);
+  }
+  .banner__tag {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--color-text-default);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-16);
+  }
+  .banner__message {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .banner__actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .banner__close {
+    color: var(--color-text-default);
+  }
+
+  /* Status cards (quick views) ---------------------------------------------- */
+  .status-cards {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+  }
+  .status-card {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 11px;
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-page);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-14);
+    line-height: var(--line-height-20);
+    text-align: left;
+    white-space: nowrap;
+    transition:
+      border-color var(--motion-fast) var(--motion-easing),
+      box-shadow var(--motion-fast) var(--motion-easing);
+  }
+  .status-card:hover {
+    border-color: var(--color-border-strong);
+  }
+  .status-card[aria-selected='true'] {
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 0.5px var(--color-brand);
+    color: var(--color-text-brand);
+    font-weight: var(--font-weight-semibold);
+  }
+  .status-card:focus-visible {
+    box-shadow: var(--shadow-focus);
+  }
+
+  /* Filter toolbar --------------------------------------------------------- */
+  .filter-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: 32px;
+    margin-top: var(--space-4);
+  }
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .filter-toolbar__actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  /* Filter pill: dashed when empty, solid with a summary when applied. */
+  .filter-pill {
+    display: inline-flex;
+    align-items: center;
+    height: var(--size-control-sm);
+    border: 1px dashed var(--color-border-default);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg-page);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-16);
+    white-space: nowrap;
+  }
+  .filter-pill:hover {
+    border-color: var(--color-border-strong);
+    color: var(--color-text-default);
+  }
+  .filter-pill__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 100%;
+    padding: 0 9px 0 6px;
+    border-radius: inherit;
+    font-weight: inherit;
+  }
+  .filter-pill__trigger:focus-visible {
+    box-shadow: var(--shadow-focus);
+  }
+  .filter-pill .icon {
+    color: var(--color-text-subdued);
+  }
+  .filter-pill[data-active='true'] {
+    border-style: solid;
+    color: var(--color-text-default);
+  }
+  .filter-pill__clear {
+    display: inline-grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    margin-left: 2px;
+    border-radius: 50%;
+  }
+  .filter-pill__clear:hover {
+    background: var(--color-bg-hover);
+  }
+  .filter-pill[data-active='true'] .filter-pill__trigger {
+    padding-left: 2px;
+  }
+  .filter-pill__divider {
+    width: 1px;
+    height: 12px;
+    margin: 0 2px;
+    background: var(--color-border-default);
+  }
+  .filter-pill__value {
+    max-width: 200px;
+    overflow: hidden;
+    color: var(--color-text-brand);
+    text-overflow: ellipsis;
+  }
+  .clear-filters {
+    height: var(--size-control-sm);
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-md);
+    color: var(--color-text-brand);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-semibold);
+  }
+  .clear-filters:hover {
+    background: var(--color-bg-hover);
+  }
+
+  /* Data table ------------------------------------------------------------- */
+  .table-region {
+    position: relative;
+    margin-top: 10px;
+  }
+  .table-scroll {
+    /* Positioned so visually-hidden cell text is clipped by this scroller, not the page. */
+    position: relative;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+  .data-table {
+    width: 100%;
+    min-width: 1424px;
+    table-layout: fixed;
+    font-size: var(--font-size-14);
+    line-height: var(--line-height-20);
+  }
+
+  .data-table__head-cell {
+    height: var(--size-table-row);
+    padding: 0 var(--space-2);
+    border-top: 1px solid var(--color-border-default);
+    border-bottom: 1px solid var(--color-border-subtle);
+    background: var(--color-bg-page);
+    color: var(--color-text-default);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-20);
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  .data-table__cell {
+    height: var(--size-table-row);
+    padding: 0 var(--space-2);
+    border-bottom: 1px solid var(--color-border-subtle);
+    background: var(--color-bg-page);
+    color: var(--color-text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  .data-table__row {
+    cursor: pointer;
+  }
+  .data-table__row:hover .data-table__cell,
+  .data-table__row:focus-within .data-table__cell {
+    background: var(--color-bg-hover);
+  }
+  .data-table__row[aria-selected='true'] .data-table__cell {
+    background: var(--color-brand-subtle);
+  }
+
+  /* Column widths (measured on the reference; sum 1424px, "customer" absorbs any extra width). */
+  .col-select {
+    width: 36px;
+  }
+  .col-amount {
+    width: 86px;
+  }
+  .col-currency {
+    width: 38px;
+  }
+  .col-status {
+    width: 110px;
+  }
+  .col-method {
+    width: 140px;
+  }
+  .col-description {
+    width: 154px;
+  }
+  .col-customer {
+    width: auto;
+    min-width: 265px;
+  }
+  .col-date {
+    width: 132px;
+  }
+  .col-refunded {
+    width: 132px;
+  }
+  .col-decline {
+    width: 160px;
+  }
+  .col-id {
+    width: 150px;
+  }
+  .col-actions {
+    width: 40px;
+  }
+
+  .cell-select {
+    padding-left: var(--space-1);
+    padding-right: 0;
+  }
+  .cell-amount {
+    color: var(--color-text-default);
+    font-weight: var(--font-weight-semibold);
+    text-align: right;
+  }
+  .cell-currency {
+    padding-left: 6px;
+    padding-right: 0;
+    color: var(--color-text-secondary);
+  }
+  .cell-status {
+    overflow: visible;
+  }
+  .cell-actions {
+    position: sticky;
+    right: 0;
+    padding: 0 var(--space-1);
+    text-align: right;
+  }
+  .table-scroll[data-overflowing='true'] .cell-actions {
+    box-shadow: var(--shadow-sticky-column);
+  }
+  .cell-actions .icon-button {
+    color: var(--color-text-subdued);
+  }
+  .cell-empty {
+    color: var(--color-text-subdued);
+  }
+
+  /* Header cell content: sortable headers are buttons. */
+  .sort-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    max-width: 100%;
+    height: 24px;
+    margin: 0 -4px;
+    padding: 0 4px;
+    border-radius: var(--radius-sm);
+    font-weight: inherit;
+    white-space: nowrap;
+  }
+  .sort-button:hover {
+    background: var(--color-bg-hover);
+  }
+  .sort-button__indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    color: var(--color-text-brand);
+    font-size: var(--font-size-11);
+    line-height: 1;
+  }
+  .sort-button__indicator--idle {
+    color: var(--color-text-subdued);
+    opacity: 0;
+  }
+  .sort-button:hover .sort-button__indicator--idle,
+  .sort-button:focus-visible .sort-button__indicator--idle {
+    opacity: 1;
+  }
+  .data-table__head-cell--right {
+    text-align: right;
+  }
+  .data-table__head-cell--right .sort-button {
+    flex-direction: row-reverse;
+  }
+
+  /* Payment method cell: brand marks right-aligned in a fixed box, then •••• 4242. */
+  .payment-method {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-text-default);
+  }
+  .payment-method__marks {
+    display: inline-flex;
+    justify-content: flex-end;
+    gap: 4px;
+    width: 44px;
+    margin-left: -2px;
+  }
+  .brand-mark {
+    display: block;
+    width: var(--size-brand-mark);
+    height: var(--size-brand-mark);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .brand-mark--bank {
+    display: grid;
+    place-items: center;
+    background: var(--color-bg-offset);
+    color: var(--color-text-secondary);
+  }
+  .card-last4 {
+    margin-left: 10px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .card-last4__dots {
+    letter-spacing: 1px;
+    margin-right: 5px;
+  }
+
+  /* Copyable id chip. */
+  .copyable-id {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    max-width: 100%;
+    height: 22px;
+    padding: 0 var(--space-1) 0 6px;
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-offset);
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-12);
+    line-height: var(--line-height-20);
+    cursor: copy;
+  }
+  .copyable-id:hover {
+    background: var(--color-bg-pressed);
+    color: var(--color-text-default);
+  }
+  .copyable-id .icon {
+    color: var(--color-text-subdued);
+  }
+  .copyable-id--plain {
+    height: auto;
+    padding-left: 0;
+    background: transparent;
+    color: var(--color-text-default);
+    font-family: inherit;
+    font-size: var(--font-size-14);
+  }
+  .copyable-id--plain:hover {
+    background: transparent;
+    color: var(--color-text-brand);
+  }
+
+  /* Loading, empty and error states ------------------------------------------ */
+  .skeleton-row .data-table__cell {
+    cursor: default;
+  }
+  .state-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: 10px;
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-offset);
+  }
+  .state-box__title {
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-20);
+  }
+  .state-box__description {
+    margin-top: var(--space-1);
+    color: var(--color-text-default);
+    font-size: var(--font-size-14);
+    line-height: var(--line-height-20);
+  }
+
+  /* Pagination ----------------------------------------------------------- */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+  .pagination__summary {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-14);
+    line-height: var(--line-height-20);
+  }
+  .pagination__summary strong {
+    color: var(--color-text-default);
+    font-weight: var(--font-weight-semibold);
+  }
+  .pagination__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .pagination__page-size {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-right: var(--space-2);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-13);
+  }
+
+  /* Responsive ------------------------------------------------------------ */
+  @media (max-width: 1039.98px) {
+    .status-cards {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .status-card {
+      flex: 0 0 160px;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    .filter-toolbar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .filter-bar {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filter-toolbar__actions {
+      justify-content: flex-end;
+    }
+    .banner__message {
+      white-space: normal;
+    }
+    .pagination {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .pagination__controls {
+      justify-content: space-between;
+    }
+  }
+
+  @media (max-width: 489.98px) {
+    .page-header__actions .button__label {
+      display: none;
+    }
+    /* Banner stacks like the Dashboard: tag + close, then the message on its own line. */
+    .banner {
+      flex-wrap: wrap;
+      row-gap: var(--space-2);
+      padding: var(--space-3);
+    }
+    .banner__actions {
+      margin-left: auto;
+    }
+    .banner__message {
+      flex-basis: 100%;
+      order: 3;
+    }
+    .status-card {
+      flex-basis: 130px;
+    }
+  }
+}
