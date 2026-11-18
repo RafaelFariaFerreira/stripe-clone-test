@@ -1,13 +1,29 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { CURRENCY_LABEL, formatMoney, getSortState, type Payment, type SortColumn, type SortRule } from '@stripe-clone/domain';
+import {
+  COLUMN_BY_ID,
+  COLUMNS,
+  CURRENCY_LABEL,
+  DEFAULT_COLUMN_LAYOUT,
+  formatMoney,
+  getSortState,
+  SELECTABLE_STATUSES,
+  tableMinWidth,
+  visibleColumnOrder,
+  type ColumnDefinition,
+  type ColumnId,
+  type ColumnLayout,
+  type Payment,
+  type SortColumn,
+  type SortRule,
+} from '@stripe-clone/domain';
 import { StatusBadge } from '../../../ui/badge';
 import { CopyableId } from '../../../ui/copyable-id';
 import { Icon } from '../../../ui/icon';
 import { Indeterminate } from '../../../ui/indeterminate';
 import { PaymentsStore } from '../../../core/payments-store';
-import { COLUMNS, SELECTABLE_STATUSES, type ColumnDefinition, type ColumnId } from '../columns';
 import { CreatedCell, PaymentMethodCell } from './cells';
+import { ColumnInteractions } from './column-interactions';
 import { RowActions } from './row-actions';
 
 export interface SortEvent {
@@ -19,6 +35,10 @@ export interface SortEvent {
  * The payments table. Real table semantics; each row navigates to the details
  * page on click, while the amount cell holds the keyboard-accessible link so
  * there are no nested interactive elements.
+ *
+ * Columns have explicit widths (`table-layout: fixed`) and a trailing filler
+ * column takes any spare room, so resizing one column never changes the width
+ * of its neighbours. See `ColumnInteractions` for resizing and reordering.
  */
 @Component({
   selector: 'app-payments-table',
@@ -26,18 +46,25 @@ export interface SortEvent {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display: contents' },
   template: `
-    <table class="data-table">
+    <table
+      class="data-table"
+      [style.min-width.px]="interactions.minTableWidth()"
+      [attr.data-show-resizers]="interactions.showResizers() || null"
+      [attr.data-interacting]="interactions.drag() ? true : null"
+      [attr.data-resizing]="interactions.draft() ? true : null"
+    >
       <caption class="sr-only">
         Payments
       </caption>
       <colgroup>
         <col class="col-select" />
         @for (column of columns(); track column.id) {
-          <col [class]="'col-' + column.id" />
+          <col [style.width.px]="interactions.widthOf(column.id)" />
         }
+        <col class="col-filler" />
         <col class="col-actions" />
       </colgroup>
-      <thead>
+      <thead (pointermove)="interactions.onHeadPointerMove()" (pointerleave)="interactions.onHeadPointerLeave()">
         <tr>
           <th scope="col" class="data-table__head-cell cell-select">
             <input
@@ -58,13 +85,18 @@ export interface SortEvent {
               [class.data-table__head-cell--right]="column.align === 'right'"
               [class.cell-currency]="column.id === 'currency'"
               [attr.aria-sort]="ariaSort(column)"
+              [attr.data-column-id]="column.id"
+              data-reorderable="true"
+              [attr.data-dragging]="interactions.drag()?.id === column.id || null"
+              (pointerdown)="interactions.startReorder($event, column.id, column.header || column.name)"
             >
               @if (column.sortKey; as sortKey) {
                 <button
                   type="button"
                   class="sort-button"
-                  [title]="'Sort by ' + column.name.toLowerCase() + ' (Shift+click to add a secondary sort)'"
-                  (click)="sorted.emit({ column: sortKey, additive: $event.shiftKey })"
+                  [title]="'Sort by ' + column.name.toLowerCase() + ' (Shift+click to add a secondary sort, Alt+arrows to move the column)'"
+                  (click)="interactions.consumeDragClick() || sorted.emit({ column: sortKey, additive: $event.shiftKey })"
+                  (keydown)="interactions.onReorderKeyDown(column.id, $event)"
                   (keydown.shift.enter)="$event.preventDefault(); sorted.emit({ column: sortKey, additive: true })"
                 >
                   @if (column.header) {
@@ -88,8 +120,22 @@ export interface SortEvent {
               } @else {
                 <span class="sr-only">{{ column.name }}</span>
               }
+              <span
+                class="column-resizer"
+                role="separator"
+                tabindex="0"
+                aria-orientation="vertical"
+                [attr.aria-label]="'Resize ' + column.name + ' column'"
+                [attr.aria-valuenow]="interactions.widthOf(column.id)"
+                [attr.data-active]="interactions.draft()?.id === column.id || null"
+                (pointerdown)="interactions.startResize($event, column.id)"
+                (click)="$event.stopPropagation()"
+                (dblclick)="$event.stopPropagation(); interactions.resetWidth(column.id)"
+                (keydown)="interactions.onResizerKeyDown(column.id, $event)"
+              ></span>
             </th>
           }
+          <th scope="col" class="data-table__head-cell cell-filler" aria-hidden="true"></th>
           <th scope="col" class="data-table__head-cell cell-actions"><span class="sr-only">Actions</span></th>
         </tr>
       </thead>
@@ -116,30 +162,46 @@ export interface SortEvent {
             @for (column of columns(); track column.id) {
               @switch (column.id) {
                 @case ('amount') {
-                  <td class="data-table__cell cell-amount">
+                  <td [attr.data-dragging]="interactions.drag()?.id === column.id || null" class="data-table__cell cell-amount">
                     <a class="tabular-nums" [routerLink]="['/payments', payment.id]" (focus)="warm(payment.id)">{{ money(payment) }}</a>
                   </td>
                 }
                 @case ('currency') {
-                  <td class="data-table__cell cell-currency">{{ currencyLabel[payment.currency] }}</td>
+                  <td [attr.data-dragging]="interactions.drag()?.id === column.id || null" class="data-table__cell cell-currency">
+                    {{ currencyLabel[payment.currency] }}
+                  </td>
                 }
                 @case ('status') {
-                  <td class="data-table__cell cell-status"><app-status-badge [status]="payment.status" /></td>
+                  <td [attr.data-dragging]="interactions.drag()?.id === column.id || null" class="data-table__cell cell-status">
+                    <app-status-badge [status]="payment.status" />
+                  </td>
                 }
                 @case ('method') {
-                  <td class="data-table__cell"><app-payment-method-cell [method]="payment.paymentMethod" /></td>
+                  <td [attr.data-dragging]="interactions.drag()?.id === column.id || null" class="data-table__cell">
+                    <app-payment-method-cell [method]="payment.paymentMethod" />
+                  </td>
                 }
                 @case ('description') {
-                  <td class="data-table__cell">{{ payment.description }}</td>
+                  <td [attr.data-dragging]="interactions.drag()?.id === column.id || null" class="data-table__cell">
+                    {{ payment.description }}
+                  </td>
                 }
                 @case ('customer') {
-                  <td class="data-table__cell" [title]="payment.customer.name ?? ''">{{ payment.customer.email }}</td>
+                  <td
+                    [attr.data-dragging]="interactions.drag()?.id === column.id || null"
+                    class="data-table__cell"
+                    [title]="payment.customer.name ?? ''"
+                  >
+                    {{ payment.customer.email }}
+                  </td>
                 }
                 @case ('date') {
-                  <td class="data-table__cell"><app-created-cell [iso]="payment.created" /></td>
+                  <td [attr.data-dragging]="interactions.drag()?.id === column.id || null" class="data-table__cell">
+                    <app-created-cell [iso]="payment.created" />
+                  </td>
                 }
                 @case ('refunded') {
-                  <td class="data-table__cell">
+                  <td [attr.data-dragging]="interactions.drag()?.id === column.id || null" class="data-table__cell">
                     @if (payment.refundedAt; as refundedAt) {
                       <app-created-cell [iso]="refundedAt" />
                     } @else {
@@ -148,7 +210,11 @@ export interface SortEvent {
                   </td>
                 }
                 @case ('decline') {
-                  <td class="data-table__cell" [title]="payment.declineReason ?? ''">
+                  <td
+                    [attr.data-dragging]="interactions.drag()?.id === column.id || null"
+                    class="data-table__cell"
+                    [title]="payment.declineReason ?? ''"
+                  >
                     @if (payment.declineReason) {
                       {{ payment.declineReason }}
                     } @else {
@@ -157,20 +223,29 @@ export interface SortEvent {
                   </td>
                 }
                 @case ('id') {
-                  <td class="data-table__cell"><app-copyable-id [id]="payment.id" /></td>
+                  <td [attr.data-dragging]="interactions.drag()?.id === column.id || null" class="data-table__cell">
+                    <app-copyable-id [id]="payment.id" />
+                  </td>
                 }
               }
             }
+            <td class="data-table__cell cell-filler"></td>
             <td class="data-table__cell cell-actions"><app-row-actions [payment]="payment" /></td>
           </tr>
         }
       </tbody>
     </table>
+    @if (interactions.drag()?.indicatorX; as indicatorX) {
+      <span class="column-drop-indicator" [style.left.px]="indicatorX" aria-hidden="true"></span>
+    }
   `,
 })
 export class PaymentsTable {
   readonly rows = input.required<readonly Payment[]>();
   readonly visibleColumns = input.required<ReadonlySet<ColumnId>>();
+  /** Column order and widths (resizable and reorderable from the header). */
+  readonly layout = input<ColumnLayout>(DEFAULT_COLUMN_LAYOUT);
+  readonly layoutChange = output<ColumnLayout>();
   readonly sort = input.required<readonly SortRule[]>();
   readonly selected = input.required<ReadonlySet<string>>();
   readonly sorted = output<SortEvent>();
@@ -180,7 +255,9 @@ export class PaymentsTable {
   private readonly store = inject(PaymentsStore);
 
   protected readonly currencyLabel = CURRENCY_LABEL;
-  protected readonly columns = computed(() => COLUMNS.filter((column) => this.visibleColumns().has(column.id)));
+  private readonly order = computed(() => visibleColumnOrder(this.layout(), this.visibleColumns()));
+  protected readonly columns = computed(() => this.order().map((id) => COLUMN_BY_ID[id]));
+  protected readonly interactions = new ColumnInteractions(this.layout, this.order, (layout) => this.layoutChange.emit(layout));
   protected readonly selectable = computed(() => this.rows().filter((row) => SELECTABLE_STATUSES.has(row.status)));
   private readonly selectedOnPage = computed(() => this.selectable().filter((row) => this.selected().has(row.id)).length);
   protected readonly allSelected = computed(() => this.selectable().length > 0 && this.selectedOnPage() === this.selectable().length);
@@ -239,12 +316,13 @@ export class PaymentsTable {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { style: 'display: contents' },
   template: `
-    <table class="data-table" aria-busy="true" aria-label="Loading payments">
+    <table class="data-table" [style.min-width.px]="minWidth" aria-busy="true" aria-label="Loading payments">
       <colgroup>
         <col class="col-select" />
         @for (column of columns; track column.id) {
-          <col [class]="'col-' + column.id" />
+          <col [style.width.px]="column.defaultWidth" />
         }
+        <col class="col-filler" />
         <col class="col-actions" />
       </colgroup>
       <thead>
@@ -255,6 +333,7 @@ export class PaymentsTable {
           @for (column of columns; track column.id) {
             <th class="data-table__head-cell" [class.data-table__head-cell--right]="column.align === 'right'">{{ column.header }}</th>
           }
+          <th class="data-table__head-cell cell-filler"></th>
           <th class="data-table__head-cell cell-actions"></th>
         </tr>
       </thead>
@@ -267,6 +346,7 @@ export class PaymentsTable {
                 <span class="skeleton" [style.width.px]="widths[index] ?? 60"></span>
               </td>
             }
+            <td class="data-table__cell cell-filler"></td>
             <td class="data-table__cell cell-actions"></td>
           </tr>
         }
@@ -276,6 +356,10 @@ export class PaymentsTable {
 })
 export class PaymentsTableSkeleton {
   protected readonly columns = COLUMNS;
+  protected readonly minWidth = tableMinWidth(
+    DEFAULT_COLUMN_LAYOUT,
+    COLUMNS.map((column) => column.id),
+  );
   protected readonly placeholderRows = Array.from({ length: 10 }, (_, index) => index);
   protected readonly widths = [52, 30, 74, 92, 120, 170, 104, 16, 16, 96];
 }

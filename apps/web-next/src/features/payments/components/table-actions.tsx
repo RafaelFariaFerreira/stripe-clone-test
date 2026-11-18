@@ -1,11 +1,10 @@
 'use client';
 
-import { paymentsToCsv, type Payment } from '@stripe-clone/domain';
+import { COLUMNS, paymentsToCsv, type ColumnId, type Payment } from '@stripe-clone/domain';
 import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Icon } from '@/components/ui/icon';
 import { Popover } from '@/components/ui/popover';
-import { COLUMNS, type ColumnId } from '../columns';
 
 /** Downloads the current filtered + sorted view (all pages) as CSV. */
 function downloadCsv(rows: readonly Payment[]) {
@@ -22,10 +21,13 @@ interface TableActionsProps {
   rows: readonly Payment[];
   visibleColumns: ReadonlySet<ColumnId>;
   onVisibleColumnsChange: (next: Set<ColumnId>) => void;
+  /** Whether the user reordered or resized any column. */
+  layoutCustomized: boolean;
+  onResetLayout: () => void;
 }
 
 /** `Export` and `Edit columns`, right-aligned in the filter toolbar. */
-export function TableActions({ rows, visibleColumns, onVisibleColumnsChange }: TableActionsProps) {
+export function TableActions({ rows, visibleColumns, onVisibleColumnsChange, layoutCustomized, onResetLayout }: TableActionsProps) {
   const [open, setOpen] = useState(false);
   return (
     <div className="filter-toolbar__actions">
@@ -64,6 +66,11 @@ export function TableActions({ rows, visibleColumns, onVisibleColumnsChange }: T
                 <span className="check-option__label">{column.name}</span>
               </label>
             ))}
+          </div>
+          <div className="filter-panel__footer">
+            <button type="button" className="button button--secondary button--sm" disabled={!layoutCustomized} onClick={onResetLayout}>
+              Reset order and widths
+            </button>
           </div>
         </div>
       </Popover>

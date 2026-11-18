@@ -26,7 +26,7 @@ import { EmptyResults, LoadError } from '@/features/payments/components/states';
 import { StatusCards } from '@/features/payments/components/status-cards';
 import { CopyableId, CreatedCell, PaymentMethodCell } from '@/features/payments/components/table/cells';
 import { PaymentsTable, PaymentsTableSkeleton } from '@/features/payments/components/table/payments-table';
-import { DEFAULT_VISIBLE_COLUMNS } from '@/features/payments/columns';
+import { DEFAULT_COLUMN_LAYOUT, DEFAULT_VISIBLE_COLUMNS, type ColumnLayout } from '@stripe-clone/domain';
 import { FiltersPanel } from '@/features/search/components/filters-panel';
 import { useHydrated } from '@/lib/use-hydrated';
 import styles from './styleguide.module.css';
@@ -376,11 +376,14 @@ function LiveTable() {
   const [rows] = useState(() => samplePayments(Date.now()));
   const [sort, setSort] = useState<SortRule[]>([]);
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [layout, setLayout] = useState<ColumnLayout>(DEFAULT_COLUMN_LAYOUT);
   return (
     <div className="table-scroll" tabIndex={0} role="region" aria-label="Example payments table">
       <PaymentsTable
         rows={sortPayments(rows, sort)}
         visibleColumns={new Set(DEFAULT_VISIBLE_COLUMNS)}
+        layout={layout}
+        onLayoutChange={setLayout}
         sort={sort}
         onSort={(column, additive) => setSort((rules) => toggleSort(rules, column, additive))}
         selected={selected}

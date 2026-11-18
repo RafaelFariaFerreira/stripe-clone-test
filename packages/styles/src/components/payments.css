@@ -248,7 +248,6 @@
   }
   .data-table {
     width: 100%;
-    min-width: 1424px;
     table-layout: fixed;
     font-size: var(--font-size-14);
     line-height: var(--line-height-20);
@@ -264,6 +263,8 @@
     font-size: var(--font-size-12);
     font-weight: var(--font-weight-semibold);
     line-height: var(--line-height-20);
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
     vertical-align: middle;
   }
@@ -291,43 +292,24 @@
     background: var(--color-brand-subtle);
   }
 
-  /* Column widths (measured on the reference; sum 1424px, "customer" absorbs any extra width). */
+  /*
+   * Column widths come from the column layout (defaults measured on the
+   * reference, user-resizable) and are set inline on each <col>. Only the
+   * fixed columns are sized here; the trailing filler column has no width so
+   * it absorbs spare space, which keeps every other column at its own width
+   * while one is being resized.
+   */
   .col-select {
     width: 36px;
   }
-  .col-amount {
-    width: 86px;
-  }
-  .col-currency {
-    width: 38px;
-  }
-  .col-status {
-    width: 110px;
-  }
-  .col-method {
-    width: 140px;
-  }
-  .col-description {
-    width: 154px;
-  }
-  .col-customer {
-    width: auto;
-    min-width: 265px;
-  }
-  .col-date {
-    width: 132px;
-  }
-  .col-refunded {
-    width: 132px;
-  }
-  .col-decline {
-    width: 160px;
-  }
-  .col-id {
-    width: 150px;
-  }
   .col-actions {
     width: 40px;
+  }
+  .col-filler {
+    width: auto;
+  }
+  .cell-filler {
+    padding: 0;
   }
 
   .cell-select {
@@ -401,6 +383,94 @@
   }
   .data-table__head-cell--right .sort-button {
     flex-direction: row-reverse;
+  }
+
+  /* Resizable and reorderable columns -------------------------------------
+   * <th class="data-table__head-cell" data-reorderable="true">
+   *   …label / sort button…
+   *   <span class="column-resizer" role="separator"></span>
+   * </th>
+   * The resizer is always rendered (so showing it never causes a reflow); only
+   * its color changes: transparent → visible after the pointer rests on the
+   * header for 2s (`data-show-resizers` on the table), brand while dragging.
+   */
+  .data-table__head-cell {
+    position: relative;
+  }
+  .data-table__head-cell[data-reorderable='true'] {
+    cursor: grab;
+  }
+  .column-resizer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: flex-end;
+    width: 8px;
+    height: 100%;
+    cursor: col-resize;
+    touch-action: none;
+  }
+  .column-resizer::before {
+    content: '';
+    width: 1px;
+    height: 100%;
+    background: transparent;
+    transition: background-color var(--motion-fast) var(--motion-easing);
+  }
+  .data-table[data-show-resizers='true'] .column-resizer::before {
+    background: var(--color-border-default);
+  }
+  .data-table[data-show-resizers='true'] .column-resizer:hover::before,
+  .column-resizer[data-active='true']::before,
+  .column-resizer:focus-visible::before {
+    background: var(--color-brand);
+  }
+  .column-resizer:focus-visible {
+    box-shadow: none;
+    outline: none;
+  }
+  .data-table[data-interacting='true'] {
+    cursor: grabbing;
+    user-select: none;
+  }
+  .data-table[data-resizing='true'],
+  .data-table[data-resizing='true'] * {
+    cursor: col-resize;
+  }
+  .data-table__head-cell[data-dragging='true'],
+  .data-table__cell[data-dragging='true'] {
+    opacity: 0.45;
+  }
+
+  /* Insertion line and the floating label shown while reordering. */
+  .column-drop-indicator {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 3;
+    width: 2px;
+    margin-left: -1px;
+    background: var(--color-brand);
+    pointer-events: none;
+  }
+  .column-drag-ghost {
+    position: fixed;
+    z-index: 70;
+    display: flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-page);
+    box-shadow: var(--shadow-popover);
+    color: var(--color-text-default);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-semibold);
+    pointer-events: none;
+    transform: translate(-50%, -130%);
+    white-space: nowrap;
   }
 
   /* Payment method cell: brand marks right-aligned in a fixed box, then •••• 4242. */

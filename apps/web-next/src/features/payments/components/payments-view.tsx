@@ -6,7 +6,8 @@ import { useHorizontalOverflow } from '@/lib/use-horizontal-overflow';
 import { useHydrated } from '@/lib/use-hydrated';
 import { usePreference } from '@/lib/use-preference';
 import { usePayments } from '../api/queries';
-import { DEFAULT_VISIBLE_COLUMNS, type ColumnId } from '../columns';
+import { DEFAULT_VISIBLE_COLUMNS, type ColumnId } from '@stripe-clone/domain';
+import { useColumnLayout } from '../hooks/use-column-layout';
 import { usePaymentsQuery } from '../hooks/use-payments-query';
 import { FilterBar } from './filters/filter-bar';
 import { Pagination } from './pagination';
@@ -31,6 +32,7 @@ export function PaymentsView() {
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
   const [columnPreference, setColumnPreference] = usePreference<ColumnId[]>(COLUMNS_KEY, [...DEFAULT_VISIBLE_COLUMNS]);
   const visibleColumns = useMemo(() => new Set(columnPreference), [columnPreference]);
+  const { layout, setLayout, resetLayout, customized } = useColumnLayout();
 
   const matching = useMemo(() => (payments ? filterAndSort(payments, query) : []), [payments, query]);
   const result = useMemo(() => paginate(matching, query.page, query.pageSize), [matching, query.page, query.pageSize]);
@@ -49,7 +51,13 @@ export function PaymentsView() {
 
       <div className="filter-toolbar">
         <FilterBar query={query} setQuery={setQuery} onClearAll={clearFilters} />
-        <TableActions rows={matching} visibleColumns={visibleColumns} onVisibleColumnsChange={updateColumns} />
+        <TableActions
+          rows={matching}
+          visibleColumns={visibleColumns}
+          onVisibleColumnsChange={updateColumns}
+          layoutCustomized={customized}
+          onResetLayout={resetLayout}
+        />
       </div>
 
       {hydrated && status === 'error' ? (
@@ -76,6 +84,8 @@ export function PaymentsView() {
               <PaymentsTable
                 rows={result.rows}
                 visibleColumns={visibleColumns}
+                layout={layout}
+                onLayoutChange={setLayout}
                 sort={query.sort}
                 onSort={(column, additive) => setQuery({ sort: toggleSort(query.sort, column, additive), page: 1 })}
                 selected={selected}

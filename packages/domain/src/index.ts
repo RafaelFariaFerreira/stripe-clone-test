@@ -17,3 +17,4 @@ export * from './query/apply';
 export * from './query/url';
 export * from './query/summary';
 export * from './search';
+export * from './table';

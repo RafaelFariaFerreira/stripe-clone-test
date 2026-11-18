@@ -4,7 +4,7 @@ import { injectPaymentsQuery } from '../../core/payments-query';
 import { PaymentsStore } from '../../core/payments-store';
 import { preference } from '../../core/preferences';
 import { HorizontalOverflow } from '../../ui/horizontal-overflow';
-import { DEFAULT_VISIBLE_COLUMNS, type ColumnId } from './columns';
+import { DEFAULT_COLUMN_LAYOUT, DEFAULT_VISIBLE_COLUMNS, normalizeColumnLayout, type ColumnId } from '@stripe-clone/domain';
 import { FilterBar } from './filters/filter-bar';
 import { Pagination } from './pagination';
 import { AnnouncementBanner, PaymentsHeader } from './payments-header';
@@ -42,7 +42,13 @@ import { PaymentsTable, PaymentsTableSkeleton, type SortEvent } from './table/pa
 
     <div class="filter-toolbar">
       <app-filter-bar [query]="query()" (patch)="setQuery($event)" (clearAll)="clearFilters()" />
-      <app-table-actions [rows]="matching()" [visible]="visibleColumns()" (visibleChange)="columnPreference.set([...$event])" />
+      <app-table-actions
+        [rows]="matching()"
+        [visible]="visibleColumns()"
+        [layoutCustomized]="layoutCustomized()"
+        (visibleChange)="columnPreference.set([...$event])"
+        (resetLayout)="layoutPreference.set(defaultLayout)"
+      />
     </div>
 
     @if (store.hasError()) {
@@ -59,6 +65,8 @@ import { PaymentsTable, PaymentsTableSkeleton, type SortEvent } from './table/pa
           <app-payments-table
             [rows]="result().rows"
             [visibleColumns]="visibleColumns()"
+            [layout]="columnLayout()"
+            (layoutChange)="layoutPreference.set($event)"
             [sort]="query().sort"
             [selected]="selected()"
             (sorted)="onSort($event)"
@@ -83,6 +91,14 @@ export class PaymentsPage {
   protected readonly selected = signal<ReadonlySet<string>>(new Set());
   protected readonly columnPreference = preference<ColumnId[]>('payments.table.visible-columns', [...DEFAULT_VISIBLE_COLUMNS]);
   protected readonly visibleColumns = computed(() => new Set(this.columnPreference()));
+  /** Column order and widths; sanitized on read so stale stored data can't break the table. */
+  protected readonly layoutPreference = preference<unknown>('payments.table.layout', DEFAULT_COLUMN_LAYOUT);
+  protected readonly columnLayout = computed(() => normalizeColumnLayout(this.layoutPreference()));
+  protected readonly defaultLayout = DEFAULT_COLUMN_LAYOUT;
+  protected readonly layoutCustomized = computed(() => {
+    const layout = this.columnLayout();
+    return layout.order.join() !== DEFAULT_COLUMN_LAYOUT.order.join() || Object.keys(layout.widths).length > 0;
+  });
 
   protected readonly matching = computed(() => {
     const payments = this.store.payments();

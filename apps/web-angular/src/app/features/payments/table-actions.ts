@@ -1,9 +1,8 @@
 import { A11yModule } from '@angular/cdk/a11y';
 import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
-import { paymentsToCsv, type Payment } from '@stripe-clone/domain';
+import { COLUMNS, paymentsToCsv, type ColumnId, type Payment } from '@stripe-clone/domain';
 import { Icon } from '../../ui/icon';
-import { COLUMNS, type ColumnId } from './columns';
 import { POPOVER_POSITIONS } from './filters/filter-pill';
 
 /** `Export` and `Edit columns`, right-aligned in the filter toolbar. */
@@ -59,6 +58,11 @@ import { POPOVER_POSITIONS } from './filters/filter-pill';
               </label>
             }
           </div>
+          <div class="filter-panel__footer">
+            <button type="button" class="button button--secondary button--sm" [disabled]="!layoutCustomized()" (click)="resetLayout.emit()">
+              Reset order and widths
+            </button>
+          </div>
         </div>
       </div>
     </ng-template>
@@ -68,6 +72,9 @@ export class TableActions {
   readonly rows = input.required<readonly Payment[]>();
   readonly visible = input.required<ReadonlySet<ColumnId>>();
   readonly visibleChange = output<Set<ColumnId>>();
+  /** Whether the user reordered or resized any column. */
+  readonly layoutCustomized = input(false);
+  readonly resetLayout = output();
 
   protected readonly open = signal(false);
   protected readonly positions = POPOVER_POSITIONS.slice().reverse();

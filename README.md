@@ -49,6 +49,14 @@ The Angular build serves the same routes (`/payments`, `/payments/:id`) from its
   tooltip, refunded date, decline reason, and a shortened Payment ID with copy to clipboard.
 - **Sorting:** by date, amount, status and customer. Shift+click (or Shift+Enter) adds secondary sorts.
   Mixed currencies are ordered by an approximate USD value.
+- **Resizable and reorderable columns:** rest the pointer on the header for 2 seconds and the column
+  borders appear. They are always rendered, and only their color changes, so nothing reflows. Drag a
+  border to resize that column only: a trailing filler column absorbs the difference, so its neighbours
+  keep their width. Double-click a border to restore its default width. Press a header and drag it
+  sideways to move the column; an insertion line shows where it will land, and a plain click still sorts.
+  From the keyboard, ←/→ on a focused border resizes (Shift for bigger steps, Enter resets), and
+  Alt+←/→ on a header moves the column. Order and widths persist per browser, and "Edit columns" has a
+  reset.
 - **Pagination:** 25, 50 or 100 rows per page, client-side.
 - **Filters:**
   - Date range presets (Today, 7 days, 30 days, Custom)
@@ -103,7 +111,7 @@ apps/
   web-next/        Next.js App Router app            → apps/web-next/README.md
   web-angular/     Angular standalone/zoneless app   → apps/web-angular/README.md
 packages/
-  domain/          Types, formatting, status catalog, filter/sort/paginate engine, URL state (unit tested)
+  domain/          Types, formatting, status catalog, filter/sort/paginate engine, URL state, table column layout (unit tested)
   styles/          Design tokens + component CSS shared by both apps
   icons/           SVG sources and a generated, typed icon registry
   mock-data/       Seeded generator, payments.json and lazily loaded detail shards

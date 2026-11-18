@@ -308,15 +308,16 @@ export const COMPONENTS: readonly ComponentDoc[] = [
     name: 'PaymentsTable',
     group: 'Payments',
     summary:
-      'Real <table> with 36px header and rows, fixed column widths measured on the reference, multi-column sort (Shift+click), selectable rows, sticky ⋯ column and row click → details.',
+      'Real <table> with 36px header and rows, default column widths measured on the reference, resizable columns (drag the border that appears after 2s on the header; only that column changes), reorderable columns (drag a header), multi-column sort (Shift+click), selectable rows, sticky ⋯ column and row click → details.',
     react: {
       importPath: "import { PaymentsTable } from '@/features/payments/components/table/payments-table';",
       usage:
-        '<PaymentsTable rows={page.rows} visibleColumns={columns} sort={query.sort}\n  onSort={onSort} selected={selected} onSelectedChange={setSelected} />',
+        '<PaymentsTable rows={page.rows} visibleColumns={columns} layout={layout}\n  onLayoutChange={setLayout} sort={query.sort} onSort={onSort}\n  selected={selected} onSelectedChange={setSelected} />',
     },
     angular: {
       selector: 'app-payments-table',
-      usage: '<app-payments-table [rows]="rows" [visibleColumns]="cols" [sort]="sort" (sorted)="onSort($event)" />',
+      usage:
+        '<app-payments-table [rows]="rows" [visibleColumns]="cols" [layout]="layout"\n  (layoutChange)="onLayout($event)" [sort]="sort" (sorted)="onSort($event)" />',
     },
     classes: [
       '.table-scroll',
@@ -326,15 +327,26 @@ export const COMPONENTS: readonly ComponentDoc[] = [
       '.data-table__row',
       '.sort-button',
       '.cell-*',
-      '.col-*',
+      '.column-resizer',
+      '.column-drop-indicator',
+      '.column-drag-ghost',
     ],
-    states: ['row hover', 'row selected', 'header sort idle / asc / desc / priority', 'overflowing (sticky shadow)'],
+    states: [
+      'row hover',
+      'row selected',
+      'header sort idle / asc / desc / priority',
+      'resize borders hidden / shown (2s hover) / active',
+      'column dragging',
+      'overflowing (sticky shadow)',
+    ],
     props: [
       { name: 'rows', type: 'Payment[]', description: 'Current page from applyQuery().' },
       { name: 'visibleColumns', type: 'Set<ColumnId>', description: 'From "Edit columns" (persisted).' },
+      { name: 'layout', type: 'ColumnLayout', description: 'Column order and widths (persisted); see moveColumn / resizeColumn.' },
+      { name: 'onLayoutChange', type: '(layout) => void', description: 'Called once per resize or move (on release).' },
       { name: 'sort', type: 'SortRule[]', description: 'Ordered rules; first is primary.' },
     ],
-    a11y: 'aria-sort on headers, sortable headers are buttons, the amount cell holds the keyboard link to details.',
+    a11y: 'aria-sort on headers, sortable headers are buttons, the amount cell holds the keyboard link to details. Resize borders are focusable separators (←/→ resize, Shift for bigger steps, Enter resets); Alt+←/→ on a header moves the column.',
   },
   {
     id: 'pagination',
