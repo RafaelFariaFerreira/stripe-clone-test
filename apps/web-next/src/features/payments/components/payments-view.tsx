@@ -34,7 +34,7 @@ export function PaymentsView() {
 
   const matching = useMemo(() => (payments ? filterAndSort(payments, query) : []), [payments, query]);
   const result = useMemo(() => paginate(matching, query.page, query.pageSize), [matching, query.page, query.pageSize]);
-  const scroller = useHorizontalOverflow<HTMLDivElement>(Boolean(payments && result.total));
+  const { ref: scrollerRef, overflowing } = useHorizontalOverflow<HTMLDivElement>(Boolean(payments && result.total));
 
   // A shared link may point past the last page; normalise the URL quietly.
   useEffect(() => {
@@ -66,9 +66,9 @@ export function PaymentsView() {
         <>
           <div className="table-region">
             <div
-              ref={scroller.ref}
+              ref={scrollerRef}
               className="table-scroll"
-              data-overflowing={scroller.overflowing}
+              data-overflowing={overflowing}
               tabIndex={0}
               role="region"
               aria-label="Payments table, scrolls horizontally"
