@@ -42,7 +42,11 @@ export const NAVIGATION: readonly NavSection[] = [
         icon: 'nav-payments',
         children: [{ label: 'Transactions', href: '/payments' }, { label: 'Disputes' }, { label: 'Radar' }, { label: 'Payment Links' }],
       },
-      { label: 'Billing', icon: 'nav-billing', children: [{ label: 'Subscriptions' }, { label: 'Invoices' }, { label: 'Customer portal' }] },
+      {
+        label: 'Billing',
+        icon: 'nav-billing',
+        children: [{ label: 'Subscriptions' }, { label: 'Invoices' }, { label: 'Customer portal' }],
+      },
       { label: 'Reporting', icon: 'nav-reporting', children: [{ label: 'Reports' }, { label: 'Sigma' }] },
       { label: 'More', icon: 'nav-more', children: [{ label: 'Tax' }, { label: 'Identity' }, { label: 'Atlas' }] },
     ],

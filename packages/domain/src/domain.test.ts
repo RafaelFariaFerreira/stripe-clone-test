@@ -173,9 +173,7 @@ describe('sorting', () => {
       { column: 'amount', direction: 'asc' },
       { column: 'created', direction: 'desc' },
     ]);
-    expect(toggleSort(toggleSort(rules, 'created', true), 'created', true)).toEqual([
-      { column: 'amount', direction: 'asc' },
-    ]);
+    expect(toggleSort(toggleSort(rules, 'created', true), 'created', true)).toEqual([{ column: 'amount', direction: 'asc' }]);
   });
 });
 

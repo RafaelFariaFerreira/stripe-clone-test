@@ -29,7 +29,11 @@ function readRaw(key: string): string | null {
  */
 export function usePreference<T>(key: string, fallback: T): [T, (value: T) => void] {
   // Snapshots must be stable between calls, so compare raw strings and parse once.
-  const raw = useSyncExternalStore(subscribe, () => readRaw(key), () => null);
+  const raw = useSyncExternalStore(
+    subscribe,
+    () => readRaw(key),
+    () => null,
+  );
   const value = useMemo<T>(() => {
     if (raw === null) return fallback;
     try {

@@ -70,13 +70,7 @@ export function Menu({ trigger, label, placement = 'bottom-end', children }: Men
       {open ? (
         <FloatingPortal>
           <FloatingFocusManager context={context} modal={false} initialFocus={0}>
-            <div
-              ref={refs.setFloating}
-              className="popover menu"
-              style={floatingStyles}
-              aria-label={label}
-              {...getFloatingProps()}
-            >
+            <div ref={refs.setFloating} className="popover menu" style={floatingStyles} aria-label={label} {...getFloatingProps()}>
               <MenuContext.Provider value={{ activeIndex, getItemProps, close: () => setOpen(false) }}>
                 <FloatingList elementsRef={elementsRef} labelsRef={labelsRef}>
                   {children}

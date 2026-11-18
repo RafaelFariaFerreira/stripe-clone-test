@@ -14,11 +14,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 /** Text button in the Dashboard's two sizes (28px default, 26px small). */
 export function Button({ variant = 'secondary', size = 'md', icon, className, children, type = 'button', ...rest }: ButtonProps) {
   return (
-    <button
-      type={type}
-      className={cx('button', `button--${variant}`, size === 'sm' && 'button--sm', className)}
-      {...rest}
-    >
+    <button type={type} className={cx('button', `button--${variant}`, size === 'sm' && 'button--sm', className)} {...rest}>
       {icon ? <Icon name={icon} size={12} /> : null}
       {children !== undefined ? <span className="button__label">{children}</span> : null}
     </button>

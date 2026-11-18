@@ -36,9 +36,9 @@ export const STATUS_META: Readonly<Record<PaymentStatus, StatusMeta>> = {
 };
 
 /** Statuses in the order the Status filter lists them (alphabetical, like Stripe). */
-export const STATUS_FILTER_OPTIONS: readonly PaymentStatus[] = (
-  Object.keys(STATUS_META) as PaymentStatus[]
-).sort((a, b) => STATUS_META[a].label.localeCompare(STATUS_META[b].label));
+export const STATUS_FILTER_OPTIONS: readonly PaymentStatus[] = (Object.keys(STATUS_META) as PaymentStatus[]).sort((a, b) =>
+  STATUS_META[a].label.localeCompare(STATUS_META[b].label),
+);
 
 /**
  * The quick-filter cards above the table. Each card is a preset over statuses;

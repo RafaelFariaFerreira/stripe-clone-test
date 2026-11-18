@@ -56,11 +56,7 @@ export function Popover({ open, onOpenChange, trigger, children, placement = 'bo
     ],
     whileElementsMounted: autoUpdate,
   });
-  const { getReferenceProps, getFloatingProps } = useInteractions([
-    useClick(context),
-    useDismiss(context),
-    useRole(context, { role }),
-  ]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([useClick(context), useDismiss(context), useRole(context, { role })]);
 
   // Floating UI's `refs.setReference` / `refs.setFloating` are stable callback
   // setters, not ref reads, so passing them during render is safe.

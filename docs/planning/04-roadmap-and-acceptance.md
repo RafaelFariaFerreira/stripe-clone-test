@@ -5,55 +5,55 @@ Next.js is the graded deliverable; Angular is built on the same packages right a
 
 ## 4.1 Milestones
 
-| # | Milestone | Output | Done when |
-| --- | --- | --- | --- |
-| M0 | Workspace | pnpm + Turborepo, shared tsconfig, lint, CI skeleton, both apps boot | `pnpm dev` runs both apps; CI green |
-| M1 | Foundations | `design-tokens`, `styles` base, `icons` registry (incl. redrawn Amex, Discover, Apple Pay, Google Pay, Link), `domain` types + formatters | Token page renders; Vitest covers formatters |
-| M2 | Mock data | Seeded generator, `payments.json` (600) + detail fixtures | Distribution test passes (statuses, currencies, methods, "today" rows) |
-| M3 | Query engine | `applyQuery`, URL parse/serialize, counts | 100% branch coverage on filter/sort/paginate |
-| M4 | Next: shell + table | AppShell, PageHeader, Tabs, Banner, StatusFilterCards, PaymentsTable with all columns, pagination, sorting | Overlay diff on the reference ≤ 1% mismatch at 1490 px |
-| M5 | Next: filters + search | All popovers, pills applied state, search, Clear all, empty/loading/error states | All required filter specs pass |
-| M6 | Next: details page | Route, sections, prefetch, loading/not-found | Detail overlay vs live capture |
-| M7 | Next: polish + nice-to-haves | Responsive (490/768/1040/1440), CSV export, Edit columns, URL sharing, a11y audit | Lighthouse a11y ≥ 95, axe clean |
-| M8 | Deploy + README | Railway URL, repository README with screenshots | Public URL works from a clean browser |
-| M9 | Angular | Same features on the same packages | Shared Playwright suite passes against both apps |
+| #   | Milestone                    | Output                                                                                                                                    | Done when                                                              |
+| --- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| M0  | Workspace                    | pnpm + Turborepo, shared tsconfig, lint, CI skeleton, both apps boot                                                                      | `pnpm dev` runs both apps; CI green                                    |
+| M1  | Foundations                  | `design-tokens`, `styles` base, `icons` registry (incl. redrawn Amex, Discover, Apple Pay, Google Pay, Link), `domain` types + formatters | Token page renders; Vitest covers formatters                           |
+| M2  | Mock data                    | Seeded generator, `payments.json` (600) + detail fixtures                                                                                 | Distribution test passes (statuses, currencies, methods, "today" rows) |
+| M3  | Query engine                 | `applyQuery`, URL parse/serialize, counts                                                                                                 | 100% branch coverage on filter/sort/paginate                           |
+| M4  | Next: shell + table          | AppShell, PageHeader, Tabs, Banner, StatusFilterCards, PaymentsTable with all columns, pagination, sorting                                | Overlay diff on the reference ≤ 1% mismatch at 1490 px                 |
+| M5  | Next: filters + search       | All popovers, pills applied state, search, Clear all, empty/loading/error states                                                          | All required filter specs pass                                         |
+| M6  | Next: details page           | Route, sections, prefetch, loading/not-found                                                                                              | Detail overlay vs live capture                                         |
+| M7  | Next: polish + nice-to-haves | Responsive (490/768/1040/1440), CSV export, Edit columns, URL sharing, a11y audit                                                         | Lighthouse a11y ≥ 95, axe clean                                        |
+| M8  | Deploy + README              | Railway URL, repository README with screenshots                                                                                           | Public URL works from a clean browser                                  |
+| M9  | Angular                      | Same features on the same packages                                                                                                        | Shared Playwright suite passes against both apps                       |
 
 ## 4.2 Acceptance criteria traceability
 
-| Requirement (brief) | Where it is satisfied | Verified by |
-| --- | --- | --- |
-| Payment ID, shortened, copy to clipboard | `PaymentIdCell` → `CopyableId` (`pi_3UdA…wsQ`, tooltip "Copy to clipboard" → "Copied!") | e2e: clipboard contains full ID |
-| Customer | `CustomerCell` (email; name in `title`) | e2e |
-| Amount formatted with its currency | `Money` + currency code; JPY/zero-decimal aware | unit (Intl per currency) |
-| Status badge: Succeeded, Pending, Failed, Refunded | `StatusBadge` (+ Canceled, Blocked, Uncaptured, Disputed, Partial refund from the reference) | unit + visual |
-| Payment method: brand + last 4 | `PaymentMethodCell` (wallet mark + brand mark + `•••• 4242`) | visual |
-| Created: date/time, relative time tooltip | `CreatedCell` → `DateTime` + `Tooltip` ("2 hours ago") | e2e hover/focus |
-| Sorting on date, amount, status (single or multi) | `SortableHeaderCell`, Shift+click multi-sort, stable comparator chain | unit + e2e |
-| Pagination 25 / 50 / 100 | `TablePagination` + `PageSizeSelect`, client-side | e2e |
-| Date range with presets Today, 7 days, 30 days, Custom | `DateFilterPopover` + `DateRangeCalendar` | unit (boundaries, timezones) + e2e |
-| Status multi-select | `StatusFilterPopover` | e2e |
-| Payment method multi-select (Card, ACH, Wallet) | `PaymentMethodFilterPopover` | e2e |
-| Amount range | `AmountFilterPopover` (`is between`, plus eq/gt/lt) | unit + e2e |
-| Text search: payment ID, email, last 4 | `GlobalSearch` → `query.search` | unit + e2e |
-| Mock data 300–1,000 rows, realistic, several currencies, mixed statuses | `packages/mock-data` (600 rows, 7 currencies) | distribution test |
-| Match Stripe's look; copy labels, icons, assets | Tokens from live + reference; labels verbatim (01 §1.10); icons from live DOM | overlay diff + label snapshot test |
-| Empty and loading states (added requirement) | 03 §3.5 | visual + e2e (`?status=…` with no match; throttled network) |
-| Cache what is possible; lazy load data | 03 §3.3–3.4 | network panel checks in e2e (single dataset request, detail prefetch on hover) |
-| Clean, typed, organized, documented | 03 §3.9 | CI lint/typecheck, README per package |
+| Requirement (brief)                                                     | Where it is satisfied                                                                        | Verified by                                                                    |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Payment ID, shortened, copy to clipboard                                | `PaymentIdCell` → `CopyableId` (`pi_3UdA…wsQ`, tooltip "Copy to clipboard" → "Copied!")      | e2e: clipboard contains full ID                                                |
+| Customer                                                                | `CustomerCell` (email; name in `title`)                                                      | e2e                                                                            |
+| Amount formatted with its currency                                      | `Money` + currency code; JPY/zero-decimal aware                                              | unit (Intl per currency)                                                       |
+| Status badge: Succeeded, Pending, Failed, Refunded                      | `StatusBadge` (+ Canceled, Blocked, Uncaptured, Disputed, Partial refund from the reference) | unit + visual                                                                  |
+| Payment method: brand + last 4                                          | `PaymentMethodCell` (wallet mark + brand mark + `•••• 4242`)                                 | visual                                                                         |
+| Created: date/time, relative time tooltip                               | `CreatedCell` → `DateTime` + `Tooltip` ("2 hours ago")                                       | e2e hover/focus                                                                |
+| Sorting on date, amount, status (single or multi)                       | `SortableHeaderCell`, Shift+click multi-sort, stable comparator chain                        | unit + e2e                                                                     |
+| Pagination 25 / 50 / 100                                                | `TablePagination` + `PageSizeSelect`, client-side                                            | e2e                                                                            |
+| Date range with presets Today, 7 days, 30 days, Custom                  | `DateFilterPopover` + `DateRangeCalendar`                                                    | unit (boundaries, timezones) + e2e                                             |
+| Status multi-select                                                     | `StatusFilterPopover`                                                                        | e2e                                                                            |
+| Payment method multi-select (Card, ACH, Wallet)                         | `PaymentMethodFilterPopover`                                                                 | e2e                                                                            |
+| Amount range                                                            | `AmountFilterPopover` (`is between`, plus eq/gt/lt)                                          | unit + e2e                                                                     |
+| Text search: payment ID, email, last 4                                  | `GlobalSearch` → `query.search`                                                              | unit + e2e                                                                     |
+| Mock data 300–1,000 rows, realistic, several currencies, mixed statuses | `packages/mock-data` (600 rows, 7 currencies)                                                | distribution test                                                              |
+| Match Stripe's look; copy labels, icons, assets                         | Tokens from live + reference; labels verbatim (01 §1.10); icons from live DOM                | overlay diff + label snapshot test                                             |
+| Empty and loading states (added requirement)                            | 03 §3.5                                                                                      | visual + e2e (`?status=…` with no match; throttled network)                    |
+| Cache what is possible; lazy load data                                  | 03 §3.3–3.4                                                                                  | network panel checks in e2e (single dataset request, detail prefetch on hover) |
+| Clean, typed, organized, documented                                     | 03 §3.9                                                                                      | CI lint/typecheck, README per package                                          |
 
 Nice-to-haves covered: sidebar (#1), top bar with search + account menu (#2), details route with
 timeline and metadata (#3), filters in the URL (#4), column visibility/reorder (#5), CSV export (#6).
 
 ## 4.3 Open decisions (with recommendation)
 
-| Topic | Options | Recommendation |
-| --- | --- | --- |
-| Column header for the creation time | Reference says **"Date"**; brief bullet says "Created" | Use **"Date"** (reviewers compare labels to the reference; the brief describes the data, not the label) |
-| Payment ID column position | Reference image crops before an ID column; live Dashboard shows `ID` as the last column | Last column before `⋯`, label **"ID"** (live label), shortened chip |
-| Customer column | Reference: "Customer" (email) | Keep "Customer" with email, as in the reference |
-| "Pending" status | Not visible in the reference rows | Neutral badge with clock icon, label "Pending" |
-| Text search location | Reference has only the global top-bar "Search" | Top-bar search filters the table while on Payments (placeholder "Search"); no extra input, so the hierarchy stays identical |
-| Live sandbox banner and setup guide | Present in live test mode, absent in reference | Not rendered |
+| Topic                               | Options                                                                                 | Recommendation                                                                                                              |
+| ----------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Column header for the creation time | Reference says **"Date"**; brief bullet says "Created"                                  | Use **"Date"** (reviewers compare labels to the reference; the brief describes the data, not the label)                     |
+| Payment ID column position          | Reference image crops before an ID column; live Dashboard shows `ID` as the last column | Last column before `⋯`, label **"ID"** (live label), shortened chip                                                         |
+| Customer column                     | Reference: "Customer" (email)                                                           | Keep "Customer" with email, as in the reference                                                                             |
+| "Pending" status                    | Not visible in the reference rows                                                       | Neutral badge with clock icon, label "Pending"                                                                              |
+| Text search location                | Reference has only the global top-bar "Search"                                          | Top-bar search filters the table while on Payments (placeholder "Search"); no extra input, so the hierarchy stays identical |
+| Live sandbox banner and setup guide | Present in live test mode, absent in reference                                          | Not rendered                                                                                                                |
 
 ## 4.4 Pixel-perfect QA process
 

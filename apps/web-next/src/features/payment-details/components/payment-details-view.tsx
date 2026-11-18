@@ -135,7 +135,9 @@ export function PaymentDetailsView({ id }: { id: string }) {
                   <li key={log.id} className="activity-list__item">
                     <span className="activity-list__title activity-list__title--wide">
                       {log.method} {log.path}
-                      <Badge tone={log.status < 300 ? 'neutral' : 'danger'}>{log.status < 300 ? `${log.status} OK` : `${log.status} ERR`}</Badge>
+                      <Badge tone={log.status < 300 ? 'neutral' : 'danger'}>
+                        {log.status < 300 ? `${log.status} OK` : `${log.status} ERR`}
+                      </Badge>
                     </span>
                     <time className="activity-list__time" dateTime={log.at}>
                       {formatEventTimestamp(log.at)}
@@ -167,7 +169,12 @@ export function PaymentDetailsView({ id }: { id: string }) {
               <KeyValue label="Country">{details?.origin ?? '-'}</KeyValue>
             </dl>
           </Section>
-          <Section title="Metadata" action={<IconButton icon="edit" label="Edit metadata" outlined size="sm" />} loading={loading} failed={failed}>
+          <Section
+            title="Metadata"
+            action={<IconButton icon="edit" label="Edit metadata" outlined size="sm" />}
+            loading={loading}
+            failed={failed}
+          >
             {details ? (
               Object.keys(details.metadata).length ? (
                 <dl className="key-value-list">
@@ -304,7 +311,13 @@ function PaymentMethodSection({ payment, details }: { payment: Payment; details:
   return (
     <>
       <div className="disclosure">
-        <button type="button" className="disclosure__summary" aria-expanded={expanded} aria-controls="payment-method-details" onClick={() => setExpanded((value) => !value)}>
+        <button
+          type="button"
+          className="disclosure__summary"
+          aria-expanded={expanded}
+          aria-controls="payment-method-details"
+          onClick={() => setExpanded((value) => !value)}
+        >
           <Icon name="chevron-right" size={8} />
           <PaymentMethodCell method={method} />
           {method.expMonth && method.expYear ? (

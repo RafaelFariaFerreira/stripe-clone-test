@@ -65,7 +65,7 @@ Both apps talk to the data through one interface, so the mock can later be repla
 
 ```ts
 interface PaymentsRepository {
-  list(): Promise<PaymentListItem[]>;              // whole dataset, cached; query runs client-side
+  list(): Promise<PaymentListItem[]>; // whole dataset, cached; query runs client-side
   get(id: string): Promise<PaymentDetails | null>; // fetched lazily per detail page
 }
 ```
@@ -93,37 +93,37 @@ debounce keeps typing smooth anyway).
 
 ## 3.3 Caching strategy ("cache everything possible")
 
-| Layer | What | How |
-| --- | --- | --- |
-| HTTP / CDN | `payments.json`, `details/*.json`, icons, CSS, JS | Immutable hashed assets (`max-age=31536000, immutable`); data with `max-age=3600, stale-while-revalidate` |
-| In-memory query cache | Dataset and each viewed detail | Next: TanStack Query (`staleTime: 5 min`, `gcTime: 30 min`). Angular: `PaymentsStore` service with signals + `shareReplay({ bufferSize: 1, refCount: false })`, keyed map for details |
-| Persisted cache | Dataset between visits | TanStack Query `persistQueryClient` to IndexedDB (Next); same via a small `IdbCache` wrapper (Angular). Versioned key: a dataset version bump busts it |
-| Derived data | Filtered/sorted result per query | Memoized selector (`useMemo` / `computed()`) |
-| Prefetch | Detail page | Prefetch `details/{id}.json` on row hover/focus (150 ms intent delay) and on viewport idle for the first 5 rows; Next also prefetches the route |
-| UI preferences | Banner dismissed, column visibility/order, page size | `localStorage` (try/catch, safe defaults) |
-| Back navigation | Returning from details keeps the exact list state | Filters in the URL + cached dataset = instant render; scroll position restored |
+| Layer                 | What                                                 | How                                                                                                                                                                                   |
+| --------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTTP / CDN            | `payments.json`, `details/*.json`, icons, CSS, JS    | Immutable hashed assets (`max-age=31536000, immutable`); data with `max-age=3600, stale-while-revalidate`                                                                             |
+| In-memory query cache | Dataset and each viewed detail                       | Next: TanStack Query (`staleTime: 5 min`, `gcTime: 30 min`). Angular: `PaymentsStore` service with signals + `shareReplay({ bufferSize: 1, refCount: false })`, keyed map for details |
+| Persisted cache       | Dataset between visits                               | TanStack Query `persistQueryClient` to IndexedDB (Next); same via a small `IdbCache` wrapper (Angular). Versioned key: a dataset version bump busts it                                |
+| Derived data          | Filtered/sorted result per query                     | Memoized selector (`useMemo` / `computed()`)                                                                                                                                          |
+| Prefetch              | Detail page                                          | Prefetch `details/{id}.json` on row hover/focus (150 ms intent delay) and on viewport idle for the first 5 rows; Next also prefetches the route                                       |
+| UI preferences        | Banner dismissed, column visibility/order, page size | `localStorage` (try/catch, safe defaults)                                                                                                                                             |
+| Back navigation       | Returning from details keeps the exact list state    | Filters in the URL + cached dataset = instant render; scroll position restored                                                                                                        |
 
 ## 3.4 Lazy loading
 
-| What | Next.js | Angular |
-| --- | --- | --- |
-| Payment details route | Own route segment (`app/payments/[id]/page.tsx`), code-split automatically | `loadComponent` route |
-| Filter popover bodies | `next/dynamic` per popover, preloaded on pill hover | `@defer (on interaction; prefetch on hover)` |
-| Date range calendar (Custom) | `next/dynamic` | `@defer` |
-| CSV export | dynamic `import()` on click | dynamic `import()` on click |
-| Column settings (drag & drop) | `next/dynamic` | `@defer` |
-| Detail data | Fetched only on the detail route (Suspense boundary per section) | `resource()` / `httpResource()` per section with `@defer` for below-the-fold sections (Events, Logs) |
-| Long tables | 100-row pages render plainly; row virtualization **not** needed at this size (keeps exact Stripe row DOM) | same |
+| What                          | Next.js                                                                                                   | Angular                                                                                              |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Payment details route         | Own route segment (`app/payments/[id]/page.tsx`), code-split automatically                                | `loadComponent` route                                                                                |
+| Filter popover bodies         | `next/dynamic` per popover, preloaded on pill hover                                                       | `@defer (on interaction; prefetch on hover)`                                                         |
+| Date range calendar (Custom)  | `next/dynamic`                                                                                            | `@defer`                                                                                             |
+| CSV export                    | dynamic `import()` on click                                                                               | dynamic `import()` on click                                                                          |
+| Column settings (drag & drop) | `next/dynamic`                                                                                            | `@defer`                                                                                             |
+| Detail data                   | Fetched only on the detail route (Suspense boundary per section)                                          | `resource()` / `httpResource()` per section with `@defer` for below-the-fold sections (Events, Logs) |
+| Long tables                   | 100-row pages render plainly; row virtualization **not** needed at this size (keeps exact Stripe row DOM) | same                                                                                                 |
 
 ## 3.5 Loading, empty and error states
 
-| Screen | Loading | Empty | Error |
-| --- | --- | --- | --- |
-| List: first load | Header, tabs, cards and pills render immediately; status-card counts show skeleton bars; table shows `TableSkeleton` (8 rows, same 36 px height, shimmer blocks sized like real content) | n/a | `TableErrorState` with "Retry" |
-| List: filters → no rows | n/a | Live copy: **"No results"** / "No results match your criteria" + `Clear all` (offset box) | n/a |
-| List: empty dataset | n/a | "No payments yet" state with "Create payment" (not shown in reference, styled like live empty boxes) | n/a |
-| Details | Per-section `Spinner` exactly like the live capture; header skeleton (amount + badge bars) | Dashed `EmptyBox` per section (Tax, Receipts, Metadata, Related payments) as live | `DetailNotFound` for unknown IDs, error boundary with Retry |
-| Account switcher | Skeleton bars (live capture) | — | — |
+| Screen                  | Loading                                                                                                                                                                                  | Empty                                                                                                | Error                                                       |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| List: first load        | Header, tabs, cards and pills render immediately; status-card counts show skeleton bars; table shows `TableSkeleton` (8 rows, same 36 px height, shimmer blocks sized like real content) | n/a                                                                                                  | `TableErrorState` with "Retry"                              |
+| List: filters → no rows | n/a                                                                                                                                                                                      | Live copy: **"No results"** / "No results match your criteria" + `Clear all` (offset box)            | n/a                                                         |
+| List: empty dataset     | n/a                                                                                                                                                                                      | "No payments yet" state with "Create payment" (not shown in reference, styled like live empty boxes) | n/a                                                         |
+| Details                 | Per-section `Spinner` exactly like the live capture; header skeleton (amount + badge bars)                                                                                               | Dashed `EmptyBox` per section (Tax, Receipts, Metadata, Related payments) as live                    | `DetailNotFound` for unknown IDs, error boundary with Retry |
+| Account switcher        | Skeleton bars (live capture)                                                                                                                                                             | —                                                                                                    | —                                                           |
 
 Next uses `loading.tsx` + Suspense; Angular uses `@if (store.status() === 'loading')` and `@defer`
 placeholders. Skeletons never shift layout: they reserve the final dimensions (CLS ≈ 0).
@@ -170,7 +170,7 @@ src/app/
 ```
 
 - State: `PaymentsStore` exposes `query = signal<PaymentsQuery>()`, `rows = computed(() =>
-  applyQuery(dataset(), query()))`. URL ↔ query sync in one service.
+applyQuery(dataset(), query()))`. URL ↔ query sync in one service.
 - Overlays (popover, menu, tooltip) built on `@angular/cdk/overlay` and `cdk/a11y` (focus trap,
   live announcer), styled with the shared classes.
 - Same component names and inputs as React (`<app-status-badge [status]="…">`).

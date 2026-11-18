@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  detailShardOf,
-  rebaseDataset,
-  rebaseDetails,
-  type Payment,
-  type PaymentDetails,
-  type PaymentsDataset,
-} from '@stripe-clone/domain';
+import { detailShardOf, rebaseDataset, rebaseDetails, type Payment, type PaymentDetails, type PaymentsDataset } from '@stripe-clone/domain';
 import { useQuery, type QueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { fetchDetailsShard, fetchPaymentsDataset } from './repository';
@@ -49,7 +42,12 @@ export function usePaymentsDataset() {
 }
 
 /** All payments, rebased to the current session. Memoized per dataset. */
-export function usePayments(): { payments: Payment[] | undefined; anchor: string | undefined; status: 'pending' | 'error' | 'success'; refetch: () => void } {
+export function usePayments(): {
+  payments: Payment[] | undefined;
+  anchor: string | undefined;
+  status: 'pending' | 'error' | 'success';
+  refetch: () => void;
+} {
   const query = usePaymentsDataset();
   const payments = useMemo(() => (query.data ? rebaseDataset(query.data, SESSION_NOW) : undefined), [query.data]);
   return { payments, anchor: query.data?.anchor, status: query.status, refetch: () => void query.refetch() };
@@ -64,7 +62,11 @@ export function usePaymentDetails(id: string) {
     const record = shard.data[id];
     return record ? rebaseDetails(record, dataset.data.anchor, SESSION_NOW) : null;
   }, [shard.data, dataset.data, id]);
-  return { details, status: shard.status === 'error' || dataset.status === 'error' ? 'error' : details === undefined ? 'pending' : 'success', refetch: () => void shard.refetch() } as const;
+  return {
+    details,
+    status: shard.status === 'error' || dataset.status === 'error' ? 'error' : details === undefined ? 'pending' : 'success',
+    refetch: () => void shard.refetch(),
+  } as const;
 }
 
 /** Warms the cache when the pointer rests on a row, so the details page opens instantly. */

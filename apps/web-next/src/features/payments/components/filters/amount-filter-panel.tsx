@@ -28,12 +28,19 @@ export default function AmountFilterPanel({ value, onApply }: { value: AmountFil
     <FilterPanel
       title="Amount"
       applyDisabled={invalid}
-      onApply={() => onApply(operator === 'between' ? { operator, value: Math.min(a, b), valueTo: Math.max(a, b) } : { operator, value: a })}
+      onApply={() =>
+        onApply(operator === 'between' ? { operator, value: Math.min(a, b), valueTo: Math.max(a, b) } : { operator, value: a })
+      }
     >
       <label className="sr-only" htmlFor="amount-operator">
         Condition
       </label>
-      <select id="amount-operator" className="select" value={operator} onChange={(event) => setOperator(event.target.value as AmountOperator)}>
+      <select
+        id="amount-operator"
+        className="select"
+        value={operator}
+        onChange={(event) => setOperator(event.target.value as AmountOperator)}
+      >
         {OPERATORS.map((option) => (
           <option key={option.id} value={option.id}>
             {option.label}

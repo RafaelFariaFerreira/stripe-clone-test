@@ -83,9 +83,7 @@ export function parseAmountFilter(raw: string | null): AmountFilter | null {
 }
 
 export function serializeAmountFilter(filter: AmountFilter): string {
-  return filter.operator === 'between'
-    ? `between:${filter.value}:${filter.valueTo}`
-    : `${filter.operator}:${filter.value}`;
+  return filter.operator === 'between' ? `between:${filter.value}:${filter.valueTo}` : `${filter.operator}:${filter.value}`;
 }
 
 function parseSort(raw: string | null): SortRule[] {

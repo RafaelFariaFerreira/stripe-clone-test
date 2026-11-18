@@ -43,7 +43,12 @@ export function Topbar({ navId, navOpen, onToggleNav }: TopbarProps) {
           <IconButton icon="top-help" iconSize={16} label="Help" className="topbar__icon-button" />
         </Tooltip>
         <Tooltip content="Notifications">
-          <IconButton icon="top-notifications" iconSize={16} label="Notifications, 1 unread" className="topbar__icon-button topbar__icon-button--dot topbar__icon-button--keep" />
+          <IconButton
+            icon="top-notifications"
+            iconSize={16}
+            label="Notifications, 1 unread"
+            className="topbar__icon-button topbar__icon-button--dot topbar__icon-button--keep"
+          />
         </Tooltip>
         <Tooltip content="Settings">
           <IconButton icon="top-settings" iconSize={16} label="Settings" className="topbar__icon-button" />

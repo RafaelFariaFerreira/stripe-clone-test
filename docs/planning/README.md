@@ -3,21 +3,21 @@
 Planning package for a portfolio rebuild of two Stripe Dashboard screens, implemented twice
 (Next.js + TypeScript and Angular + TypeScript) from one shared design system and domain layer.
 
-| Screen | Live reference (test mode) |
-| --- | --- |
-| Payments list (Transactions → Payments) | `/test/payments` |
-| Payment details | `/test/payments/:paymentIntentId` |
+| Screen                                  | Live reference (test mode)        |
+| --------------------------------------- | --------------------------------- |
+| Payments list (Transactions → Payments) | `/test/payments`                  |
+| Payment details                         | `/test/payments/:paymentIntentId` |
 
 No code is written at this stage. This folder is the source of truth for the build.
 
 ## Documents
 
-| # | Document | What it answers |
-| --- | --- | --- |
-| 1 | [Style guide](./01-style-guide.md) | Colors, typography, spacing, radii, shadows, icons, breakpoints, state styling |
-| 2 | [Component map](./02-component-map.md) | Which elements repeat, the component tree for both screens, props and states |
-| 3 | [Architecture](./03-architecture.md) | Monorepo layout, shared packages, data, caching, lazy loading, URL state, a11y |
-| 4 | [Roadmap and acceptance](./04-roadmap-and-acceptance.md) | Milestones, acceptance-criteria traceability, QA and visual-regression process |
+| #   | Document                                                 | What it answers                                                                |
+| --- | -------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| 1   | [Style guide](./01-style-guide.md)                       | Colors, typography, spacing, radii, shadows, icons, breakpoints, state styling |
+| 2   | [Component map](./02-component-map.md)                   | Which elements repeat, the component tree for both screens, props and states   |
+| 3   | [Architecture](./03-architecture.md)                     | Monorepo layout, shared packages, data, caching, lazy loading, URL state, a11y |
+| 4   | [Roadmap and acceptance](./04-roadmap-and-acceptance.md) | Milestones, acceptance-criteria traceability, QA and visual-regression process |
 
 Reference material lives in [`../reference`](../reference):
 

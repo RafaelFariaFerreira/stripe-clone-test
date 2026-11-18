@@ -58,10 +58,7 @@ export function toggleSort(rules: readonly SortRule[], column: SortColumn, addit
 }
 
 /** Looks up the direction and 1-based priority of a column, for header indicators. */
-export function getSortState(
-  rules: readonly SortRule[],
-  column: SortColumn,
-): { direction: SortDirection; priority: number } | null {
+export function getSortState(rules: readonly SortRule[], column: SortColumn): { direction: SortDirection; priority: number } | null {
   const index = rules.findIndex((rule) => rule.column === column);
   const rule = rules[index];
   return rule ? { direction: rule.direction, priority: index + 1 } : null;

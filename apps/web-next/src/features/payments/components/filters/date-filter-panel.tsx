@@ -49,7 +49,14 @@ export default function DateFilterPanel({ value, onApply }: DateFilterPanelProps
             <label className="field-label" htmlFor="date-from">
               From
             </label>
-            <input id="date-from" className="input" type="date" value={from} max={today} onChange={(event) => setFrom(event.target.value)} />
+            <input
+              id="date-from"
+              className="input"
+              type="date"
+              value={from}
+              max={today}
+              onChange={(event) => setFrom(event.target.value)}
+            />
           </div>
           <div>
             <label className="field-label" htmlFor="date-to">

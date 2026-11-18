@@ -1,9 +1,4 @@
-import {
-  detailShardOf,
-  type PaymentDetails,
-  type PaymentDetailsShard,
-  type PaymentsDataset,
-} from '@stripe-clone/domain';
+import { detailShardOf, type PaymentDetails, type PaymentDetailsShard, type PaymentsDataset } from '@stripe-clone/domain';
 
 /**
  * HTTP access to the mock dataset served from `/public/data`.

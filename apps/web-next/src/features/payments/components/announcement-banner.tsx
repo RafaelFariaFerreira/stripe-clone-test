@@ -22,13 +22,7 @@ export function AnnouncementBanner() {
           Get started
         </a>
         <span className="vertical-divider" aria-hidden="true" />
-        <IconButton
-          icon="close"
-          label="Dismiss announcement"
-          size="sm"
-          className="banner__close"
-          onClick={() => setDismissed(true)}
-        />
+        <IconButton icon="close" label="Dismiss announcement" size="sm" className="banner__close" onClick={() => setDismissed(true)} />
       </div>
     </section>
   );

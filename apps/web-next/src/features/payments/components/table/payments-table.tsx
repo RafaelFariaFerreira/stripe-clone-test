@@ -137,7 +137,15 @@ function TableColGroup({ columns }: { columns: readonly ColumnDefinition[] }) {
   );
 }
 
-function HeaderCell({ column, sort, onSort }: { column: ColumnDefinition; sort: readonly SortRule[]; onSort: PaymentsTableProps['onSort'] }) {
+function HeaderCell({
+  column,
+  sort,
+  onSort,
+}: {
+  column: ColumnDefinition;
+  sort: readonly SortRule[];
+  onSort: PaymentsTableProps['onSort'];
+}) {
   const right = column.align === 'right';
   const className = cx('data-table__head-cell', right && 'data-table__head-cell--right', column.id === 'currency' && 'cell-currency');
   if (!column.sortKey) {

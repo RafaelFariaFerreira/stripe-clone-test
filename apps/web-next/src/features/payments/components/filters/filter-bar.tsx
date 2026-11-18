@@ -70,7 +70,11 @@ export function FilterBar({ query, setQuery, onClearAll }: FilterBarProps) {
         )}
       </FilterPill>
 
-      <FilterPill label="Currency" summary={query.currencies.length ? summarizeCurrencies(query.currencies) : null} onClear={() => setQuery({ currencies: [] })}>
+      <FilterPill
+        label="Currency"
+        summary={query.currencies.length ? summarizeCurrencies(query.currencies) : null}
+        onClear={() => setQuery({ currencies: [] })}
+      >
         {(close) => (
           <ChecklistFilterPanel
             title="Currency"
@@ -84,7 +88,11 @@ export function FilterBar({ query, setQuery, onClearAll }: FilterBarProps) {
         )}
       </FilterPill>
 
-      <FilterPill label="Status" summary={query.statuses.length ? summarizeStatuses(query.statuses) : null} onClear={() => setQuery({ statuses: [] })}>
+      <FilterPill
+        label="Status"
+        summary={query.statuses.length ? summarizeStatuses(query.statuses) : null}
+        onClear={() => setQuery({ statuses: [] })}
+      >
         {(close) => (
           <ChecklistFilterPanel
             title="Status"
@@ -98,7 +106,11 @@ export function FilterBar({ query, setQuery, onClearAll }: FilterBarProps) {
         )}
       </FilterPill>
 
-      <FilterPill label="Payment method" summary={query.methods.length ? summarizeMethods(query.methods) : null} onClear={() => setQuery({ methods: [] })}>
+      <FilterPill
+        label="Payment method"
+        summary={query.methods.length ? summarizeMethods(query.methods) : null}
+        onClear={() => setQuery({ methods: [] })}
+      >
         {(close) => (
           <ChecklistFilterPanel
             title="Payment method"

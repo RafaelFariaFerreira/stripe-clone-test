@@ -1,0 +1,9 @@
+node_modules
+dist
+.next
+.angular
+pnpm-lock.yaml
+packages/mock-data/data
+packages/icons/src/registry.ts
+docs/reference
+apps/*/public/data

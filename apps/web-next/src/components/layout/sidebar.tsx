@@ -84,7 +84,13 @@ function NavGroup({ item, isActive, onNavigate }: { item: NavEntry; isActive: (h
   const panelId = `nav-group-${item.label.toLowerCase()}`;
   return (
     <>
-      <button type="button" className="nav-item" aria-expanded={expanded} aria-controls={panelId} onClick={() => setExpanded((value) => !value)}>
+      <button
+        type="button"
+        className="nav-item"
+        aria-expanded={expanded}
+        aria-controls={panelId}
+        onClick={() => setExpanded((value) => !value)}
+      >
         <Icon name={item.icon} size={16} />
         <span className="nav-item__label">{item.label}</span>
         <Icon name="chevron-down" size={8} className="nav-item__chevron" />

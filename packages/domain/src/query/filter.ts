@@ -75,10 +75,7 @@ export function matchesSearch(payment: Payment, search: string): boolean {
  * treated as one more status constraint and combines (AND) with the Status
  * filter, exactly like clicking a card while a status filter is applied.
  */
-export function createPaymentPredicate(
-  query: PaymentsQuery,
-  now: Date = new Date(),
-): (payment: Payment) => boolean {
+export function createPaymentPredicate(query: PaymentsQuery, now: Date = new Date()): (payment: Payment) => boolean {
   const viewStatuses = PAYMENT_VIEWS.find((view) => view.id === query.view)?.statuses ?? null;
   const statusSet = query.statuses.length ? new Set(query.statuses) : null;
   const currencySet = query.currencies.length ? new Set(query.currencies) : null;

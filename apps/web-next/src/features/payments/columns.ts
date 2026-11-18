@@ -5,17 +5,7 @@ import type { SortColumn } from '@stripe-clone/domain';
  * columns without a visible header (currency code, status) keep an accessible
  * name for screen readers and sorting.
  */
-export type ColumnId =
-  | 'amount'
-  | 'currency'
-  | 'status'
-  | 'method'
-  | 'description'
-  | 'customer'
-  | 'date'
-  | 'refunded'
-  | 'decline'
-  | 'id';
+export type ColumnId = 'amount' | 'currency' | 'status' | 'method' | 'description' | 'customer' | 'date' | 'refunded' | 'decline' | 'id';
 
 export interface ColumnDefinition {
   id: ColumnId;

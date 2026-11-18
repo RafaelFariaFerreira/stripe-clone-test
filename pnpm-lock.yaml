@@ -166,6 +166,9 @@ importers:
 
   .:
     devDependencies:
+      prettier:
+        specifier: 3.8.1
+        version: 3.8.1
       turbo:
         specifier: 2.11.13
         version: 2.11.13
@@ -175,6 +178,9 @@ importers:
 
   apps/web-angular:
     dependencies:
+      '@angular/cdk':
+        specifier: ^22.3.0
+        version: 22.3.0(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/forms@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@angular/common':
         specifier: ^22.2.0
         version: 22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -193,6 +199,18 @@ importers:
       '@angular/router':
         specifier: ^22.2.0
         version: 22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(rxjs@7.8.2)
+      '@stripe-clone/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
+      '@stripe-clone/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
+      '@stripe-clone/styles':
+        specifier: workspace:*
+        version: link:../../packages/styles
+      idb-keyval:
+        specifier: 6.3.0
+        version: 6.3.0
       rxjs:
         specifier: ~7.8.0
         version: 7.8.2
@@ -209,18 +227,12 @@ importers:
       '@angular/compiler-cli':
         specifier: ^22.2.0
         version: 22.2.6(@angular/compiler@22.2.6)(typescript@6.0.3)
-      jsdom:
-        specifier: ^30.0.0
-        version: 30.1.3
-      prettier:
-        specifier: ^3.8.1
-        version: 3.10.1
+      '@stripe-clone/mock-data':
+        specifier: workspace:*
+        version: link:../../packages/mock-data
       typescript:
         specifier: 6.0.3
         version: 6.0.3
-      vitest:
-        specifier: ^5.0.0
-        version: 5.1.0(@types/node@24.19.2)(jsdom@30.1.3)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(sass-embedded@1.104.1)(sass@1.104.1)(tsx@4.23.15))
 
   apps/web-next:
     dependencies:
@@ -250,7 +262,7 @@ importers:
         version: 6.3.0
       next:
         specifier: 16.4.6
-        version: 16.4.6(@babel/core@7.29.13(supports-color@8.1.1))(@types/node@24.19.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.104.1)
+        version: 16.4.6(@babel/core@7.29.13(supports-color@8.1.1))(@playwright/test@1.65.1)(@types/node@24.19.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.104.1)
       react:
         specifier: 19.3.0
         version: 19.3.0
@@ -288,6 +300,18 @@ importers:
       vitest:
         specifier: 5.1.1
         version: 5.1.1(@types/node@24.19.2)(jsdom@30.1.3)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(sass-embedded@1.104.1)(sass@1.104.1)(tsx@4.23.15))
+
+  packages/e2e:
+    devDependencies:
+      '@playwright/test':
+        specifier: 1.65.1
+        version: 1.65.1
+      '@types/node':
+        specifier: ^24
+        version: 24.19.2
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
 
   packages/icons:
     devDependencies:
@@ -388,6 +412,15 @@ packages:
         optional: true
       vitest:
         optional: true
+
+  '@angular/cdk@22.3.0':
+    resolution: {integrity: sha512-5qLK4np1a26u/MgCgRzmP/E35DVK9lsMibT2yC22UiK5GCI7epT1bCy9PSmiTIMWNo4d7G2c6XxDWrwo0EmTCQ==}
+    peerDependencies:
+      '@angular/common': ^22.0.0 || ^23.0.0
+      '@angular/core': ^22.0.0 || ^23.0.0
+      '@angular/forms': ^22.0.0 || ^23.0.0
+      '@angular/platform-browser': ^22.0.0 || ^23.0.0
+      rxjs: ^6.5.3 || ^7.4.0
 
   '@angular/cli@22.2.7':
     resolution: {integrity: sha512-TtO2qiDJj3OjeqZ1V/SiDYkwBKDVk45PxDBxjNksw5sLe2H122RYjdcVPDteEGJjAJGwnP2qkQ5wa/6YRitNiA==}
@@ -1722,6 +1755,11 @@ packages:
   '@parcel/watcher@2.6.0':
     resolution: {integrity: sha512-7FNeNl8NCE7aINx7WXiKQrPYZWC/hvrTsmk6zmxbI7LTXE7hVek/n8AfVgpe2y82zl3w0HvCHN0bVKMBoJcC0w==}
     engines: {node: '>= 10.0.0'}
+
+  '@playwright/test@1.65.1':
+    resolution: {integrity: sha512-y+NCIRm2LvY4slUVWvGh1nujJ8RF/hEisIsq2mtUPgdQC4L701bq5hZGMhrpeXjACvwvO9tj5dJqhvM6TP9lbw==}
+    engines: {node: '>=20'}
+    hasBin: true
 
   '@rolldown/binding-android-arm-eabi@1.2.16':
     resolution: {integrity: sha512-ia3DwAs0OsMGS7+IConptSiyk9pEXkOx/AbJ2n/lAGxH3QkWQus1t8d7gnAT38FCU2sQu8lUbeR6AiZFv4JxaA==}
@@ -3419,6 +3457,16 @@ packages:
     resolution: {integrity: sha512-vv7l/mM7B9WgrhDaudIqv1x6v4LOBRYYmpWGdWushhpbCmVHp11sUB2v4hj1CAeTGXVxuZFz6xOU1RalAiPKfQ==}
     engines: {node: '>=20.x'}
 
+  playwright-core@1.65.1:
+    resolution: {integrity: sha512-hqPpz7blSMPxWVdoeE1yiBSzXsKiVOd2k+kjCvmUywD2GPO2Dd9HfcWnq9NN0GHbNZDFgZ9JfBFr+X5/BLo0qw==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.65.1:
+    resolution: {integrity: sha512-vJ1FuoOrNwOKHUIVEvSt3jT1L+wjjDpwhwIstKtfvTh8XIG4FG4bIFuvNdMxi81LGfAhUgUZleVFaOLY4RIUUw==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
     engines: {node: '>= 0.4'}
@@ -3444,8 +3492,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier@3.10.1:
-    resolution: {integrity: sha512-70vp3ZUYoPlFbF9uiTdXHUUCGEIp7d4+6p+8DYbkm2jP7x/3i/paXVF6dopSI3zd/CEitrZN1rc4i85xWmmXlg==}
+  prettier@3.8.1:
+    resolution: {integrity: sha512-UOnG6LftzbdaHZcKoPFtOcCKztrQ57WkHDeRD9t/PTQtmT0NHSeWWepj6pS0z/N7+08BHFDQVUrfmfMRcZwbMg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -4297,6 +4345,16 @@ snapshots:
       - tsx
       - yaml
 
+  '@angular/cdk@22.3.0(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/forms@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(rxjs@7.8.2)':
+    dependencies:
+      '@angular/common': 22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/core': 22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)
+      '@angular/forms': 22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(rxjs@7.8.2)
+      '@angular/platform-browser': 22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))
+      parse5: 8.1.1
+      rxjs: 7.8.2
+      tslib: 2.9.1
+
   '@angular/cli@22.2.7(@types/node@24.19.2)(chokidar@5.0.0)':
     dependencies:
       '@angular-devkit/architect': 0.2202.7(chokidar@5.0.0)
@@ -4379,6 +4437,7 @@ snapshots:
       '@csstools/css-parser-algorithms': 4.0.3(@csstools/css-tokenizer@4.0.3)
       '@csstools/css-tokenizer': 4.0.3
       lru-cache: 11.5.3
+    optional: true
 
   '@asamuzakjp/dom-selector@10.0.6':
     dependencies:
@@ -4386,6 +4445,7 @@ snapshots:
       css-tree: 3.2.1
       is-potential-custom-element-name: 1.0.1
       lru-cache: 11.5.3
+    optional: true
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -4590,15 +4650,18 @@ snapshots:
   '@bramus/specificity@2.4.3':
     dependencies:
       css-tree: 3.2.1
+    optional: true
 
   '@bufbuild/protobuf@2.17.0': {}
 
-  '@csstools/color-helpers@6.1.3': {}
+  '@csstools/color-helpers@6.1.3':
+    optional: true
 
   '@csstools/css-calc@3.4.4(@csstools/css-parser-algorithms@4.0.3(@csstools/css-tokenizer@4.0.3))(@csstools/css-tokenizer@4.0.3)':
     dependencies:
       '@csstools/css-parser-algorithms': 4.0.3(@csstools/css-tokenizer@4.0.3)
       '@csstools/css-tokenizer': 4.0.3
+    optional: true
 
   '@csstools/css-color-parser@4.2.8(@csstools/css-parser-algorithms@4.0.3(@csstools/css-tokenizer@4.0.3))(@csstools/css-tokenizer@4.0.3)':
     dependencies:
@@ -4606,16 +4669,20 @@ snapshots:
       '@csstools/css-calc': 3.4.4(@csstools/css-parser-algorithms@4.0.3(@csstools/css-tokenizer@4.0.3))(@csstools/css-tokenizer@4.0.3)
       '@csstools/css-parser-algorithms': 4.0.3(@csstools/css-tokenizer@4.0.3)
       '@csstools/css-tokenizer': 4.0.3
+    optional: true
 
   '@csstools/css-parser-algorithms@4.0.3(@csstools/css-tokenizer@4.0.3)':
     dependencies:
       '@csstools/css-tokenizer': 4.0.3
+    optional: true
 
   '@csstools/css-syntax-patches-for-csstree@1.1.17(css-tree@3.2.1)':
     optionalDependencies:
       css-tree: 3.2.1
+    optional: true
 
-  '@csstools/css-tokenizer@4.0.3': {}
+  '@csstools/css-tokenizer@4.0.3':
+    optional: true
 
   '@emnapi/core@2.0.0-alpha.6':
     dependencies:
@@ -4767,7 +4834,8 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@exodus/bytes@1.16.0': {}
+  '@exodus/bytes@1.16.0':
+    optional: true
 
   '@floating-ui/core@1.8.0':
     dependencies:
@@ -5380,6 +5448,10 @@ snapshots:
       '@parcel/watcher-win32-arm64': 2.6.0
       '@parcel/watcher-win32-x64': 2.6.0
 
+  '@playwright/test@1.65.1':
+    dependencies:
+      playwright: 1.65.1
+
   '@rolldown/binding-android-arm-eabi@1.2.16':
     optional: true
 
@@ -5693,6 +5765,7 @@ snapshots:
       magic-string: 1.4.5
     optionalDependencies:
       vite: 8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(sass-embedded@1.104.1)(sass@1.104.1)(tsx@4.23.15)
+    optional: true
 
   '@vitest/mocker@5.1.1(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(sass-embedded@1.104.1)(sass@1.104.1)(tsx@4.23.15))':
     dependencies:
@@ -5703,7 +5776,8 @@ snapshots:
     optionalDependencies:
       vite: 8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(sass-embedded@1.104.1)(sass@1.104.1)(tsx@4.23.15)
 
-  '@vitest/spy@5.1.0': {}
+  '@vitest/spy@5.1.0':
+    optional: true
 
   '@vitest/spy@5.1.1': {}
 
@@ -5853,6 +5927,7 @@ snapshots:
   bidi-js@1.1.0:
     dependencies:
       require-from-string: 2.0.2
+    optional: true
 
   boolbase@2.0.0: {}
 
@@ -5968,6 +6043,7 @@ snapshots:
     dependencies:
       mdn-data: 2.27.1
       source-map-js: 1.2.2
+    optional: true
 
   css-what@8.0.0: {}
 
@@ -5981,6 +6057,7 @@ snapshots:
       whatwg-url: 17.3.0
     transitivePeerDependencies:
       - '@noble/hashes'
+    optional: true
 
   data-view-buffer@1.0.2:
     dependencies:
@@ -6012,7 +6089,8 @@ snapshots:
     optionalDependencies:
       supports-color: 8.1.1
 
-  decimal.js@10.6.0: {}
+  decimal.js@10.6.0:
+    optional: true
 
   deep-is@0.1.4: {}
 
@@ -6599,6 +6677,7 @@ snapshots:
       '@exodus/bytes': 1.16.0
     transitivePeerDependencies:
       - '@noble/hashes'
+    optional: true
 
   htmlparser2@12.0.0:
     dependencies:
@@ -6726,7 +6805,8 @@ snapshots:
 
   is-number@7.0.0: {}
 
-  is-potential-custom-element-name@1.0.1: {}
+  is-potential-custom-element-name@1.0.1:
+    optional: true
 
   is-regex@1.2.1:
     dependencies:
@@ -6814,6 +6894,7 @@ snapshots:
       xml-name-validator: 5.0.0
     transitivePeerDependencies:
       - '@noble/hashes'
+    optional: true
 
   jsesc@3.1.0: {}
 
@@ -6968,7 +7049,8 @@ snapshots:
 
   math-intrinsics@1.1.0: {}
 
-  mdn-data@2.27.1: {}
+  mdn-data@2.27.1:
+    optional: true
 
   merge2@1.4.1: {}
 
@@ -7019,7 +7101,7 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next@16.4.6(@babel/core@7.29.13(supports-color@8.1.1))(@types/node@24.19.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.104.1):
+  next@16.4.6(@babel/core@7.29.13(supports-color@8.1.1))(@playwright/test@1.65.1)(@types/node@24.19.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.104.1):
     dependencies:
       '@next/env': 16.4.6
       '@swc/helpers': 0.5.23
@@ -7038,6 +7120,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 16.4.6
       '@next/swc-win32-arm64-msvc': 16.4.6
       '@next/swc-win32-x64-msvc': 16.4.6
+      '@playwright/test': 1.65.1
       sass: 1.104.1
       sharp: 0.35.5(@types/node@24.19.2)
     transitivePeerDependencies:
@@ -7221,6 +7304,12 @@ snapshots:
     optionalDependencies:
       '@napi-rs/nice': 1.1.1
 
+  playwright-core@1.65.1: {}
+
+  playwright@1.65.1:
+    dependencies:
+      playwright-core: 1.65.1
+
   possible-typed-array-names@1.1.0: {}
 
   postcss-media-query-parser@0.2.3: {}
@@ -7243,7 +7332,7 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier@3.10.1: {}
+  prettier@3.8.1: {}
 
   proc-log@7.0.0: {}
 
@@ -7462,6 +7551,7 @@ snapshots:
   saxes@6.0.0:
     dependencies:
       xmlchars: 2.2.0
+    optional: true
 
   scheduler@0.28.0: {}
 
@@ -7699,11 +7789,13 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.7)
       picomatch: 4.0.7
 
-  tldts-core@7.5.4: {}
+  tldts-core@7.5.4:
+    optional: true
 
   tldts@7.5.4:
     dependencies:
       tldts-core: 7.5.4
+    optional: true
 
   to-regex-range@5.0.1:
     dependencies:
@@ -7712,10 +7804,12 @@ snapshots:
   tough-cookie@6.1.0:
     dependencies:
       tldts: 7.5.4
+    optional: true
 
   tr46@7.0.0:
     dependencies:
       punycode: 2.3.1
+    optional: true
 
   ts-api-utils@2.5.0(typescript@6.0.3):
     dependencies:
@@ -7804,7 +7898,8 @@ snapshots:
 
   undici-types@7.24.6: {}
 
-  undici@8.12.4: {}
+  undici@8.12.4:
+    optional: true
 
   unrs-resolver@1.13.0:
     dependencies:
@@ -7886,6 +7981,7 @@ snapshots:
       jsdom: 30.1.3
     transitivePeerDependencies:
       - msw
+    optional: true
 
   vitest@5.1.1(@types/node@24.19.2)(jsdom@30.1.3)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(sass-embedded@1.104.1)(sass@1.104.1)(tsx@4.23.15)):
     dependencies:
@@ -7912,13 +8008,16 @@ snapshots:
   w3c-xmlserializer@6.0.0:
     dependencies:
       xml-name-validator: 5.0.0
+    optional: true
 
   weak-lru-cache@1.2.3:
     optional: true
 
-  webidl-conversions@8.0.1: {}
+  webidl-conversions@8.0.1:
+    optional: true
 
-  whatwg-mimetype@5.0.0: {}
+  whatwg-mimetype@5.0.0:
+    optional: true
 
   whatwg-url@17.3.0:
     dependencies:
@@ -7927,6 +8026,7 @@ snapshots:
       webidl-conversions: 8.0.1
     transitivePeerDependencies:
       - '@noble/hashes'
+    optional: true
 
   which-boxed-primitive@1.1.1:
     dependencies:
@@ -7988,9 +8088,11 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.2.0
 
-  xml-name-validator@5.0.0: {}
+  xml-name-validator@5.0.0:
+    optional: true
 
-  xmlchars@2.2.0: {}
+  xmlchars@2.2.0:
+    optional: true
 
   xxhash-wasm@1.1.0: {}
 

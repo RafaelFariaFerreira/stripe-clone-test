@@ -38,7 +38,12 @@ export function Pagination({ result, pageSize, onPageChange, onPageSizeChange }:
             ))}
           </select>
         </label>
-        <button type="button" className="button button--secondary button--sm" disabled={result.page <= 1} onClick={() => onPageChange(result.page - 1)}>
+        <button
+          type="button"
+          className="button button--secondary button--sm"
+          disabled={result.page <= 1}
+          onClick={() => onPageChange(result.page - 1)}
+        >
           Previous
         </button>
         <button

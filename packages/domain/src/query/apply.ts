@@ -24,11 +24,7 @@ export function paginate<T>(rows: readonly T[], page: number, pageSize: number):
 }
 
 /** Filters and sorts the full dataset; the result feeds both pagination and CSV export. */
-export function filterAndSort(
-  rows: readonly Payment[],
-  query: PaymentsQuery,
-  now: Date = new Date(),
-): Payment[] {
+export function filterAndSort(rows: readonly Payment[], query: PaymentsQuery, now: Date = new Date()): Payment[] {
   return sortPayments(rows.filter(createPaymentPredicate(query, now)), query.sort);
 }
 
@@ -37,17 +33,11 @@ export function filterAndSort(
  * well under a few milliseconds, so it runs synchronously on every change and
  * the apps only memoize it.
  */
-export function applyQuery(
-  rows: readonly Payment[],
-  query: PaymentsQuery,
-  now: Date = new Date(),
-): QueryResult<Payment> {
+export function applyQuery(rows: readonly Payment[], query: PaymentsQuery, now: Date = new Date()): QueryResult<Payment> {
   return paginate(filterAndSort(rows, query, now), query.page, query.pageSize);
 }
 
 /** True when any filter (not the view card, search, sort or paging) is active. */
 export function hasActiveFilters(query: PaymentsQuery): boolean {
-  return Boolean(
-    query.date || query.amount || query.currencies.length || query.statuses.length || query.methods.length,
-  );
+  return Boolean(query.date || query.amount || query.currencies.length || query.statuses.length || query.methods.length);
 }

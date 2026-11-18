@@ -82,17 +82,89 @@ const objectId = (prefix: string, lead: string) => `${prefix}_${lead}${token(4)}
 // ---------------------------------------------------------------------------
 
 const FIRST_NAMES = [
-  'olivia', 'liam', 'emma', 'noah', 'ava', 'mateo', 'sofia', 'lucas', 'isabella', 'ethan', 'mia',
-  'gabriel', 'amelia', 'leo', 'harper', 'theo', 'chloe', 'daniel', 'laura', 'marcus', 'priya',
-  'kenji', 'aisha', 'diego', 'hannah', 'omar', 'julia', 'samuel', 'nina', 'victor', 'grace',
-  'felipe', 'claire', 'arjun', 'beatriz', 'jordan', 'maya', 'tomas', 'elena', 'kofi', 'ines',
+  'olivia',
+  'liam',
+  'emma',
+  'noah',
+  'ava',
+  'mateo',
+  'sofia',
+  'lucas',
+  'isabella',
+  'ethan',
+  'mia',
+  'gabriel',
+  'amelia',
+  'leo',
+  'harper',
+  'theo',
+  'chloe',
+  'daniel',
+  'laura',
+  'marcus',
+  'priya',
+  'kenji',
+  'aisha',
+  'diego',
+  'hannah',
+  'omar',
+  'julia',
+  'samuel',
+  'nina',
+  'victor',
+  'grace',
+  'felipe',
+  'claire',
+  'arjun',
+  'beatriz',
+  'jordan',
+  'maya',
+  'tomas',
+  'elena',
+  'kofi',
+  'ines',
 ] as const;
 
 const LAST_NAMES = [
-  'smith', 'johnson', 'garcia', 'silva', 'santos', 'miller', 'davis', 'martinez', 'lopez', 'clark',
-  'walker', 'young', 'king', 'wright', 'scott', 'green', 'baker', 'adams', 'nelson', 'carter',
-  'mitchell', 'perez', 'roberts', 'turner', 'phillips', 'campbell', 'parker', 'evans', 'edwards',
-  'collins', 'stewart', 'morris', 'rogers', 'reed', 'cook', 'morgan', 'bell', 'murphy', 'bailey',
+  'smith',
+  'johnson',
+  'garcia',
+  'silva',
+  'santos',
+  'miller',
+  'davis',
+  'martinez',
+  'lopez',
+  'clark',
+  'walker',
+  'young',
+  'king',
+  'wright',
+  'scott',
+  'green',
+  'baker',
+  'adams',
+  'nelson',
+  'carter',
+  'mitchell',
+  'perez',
+  'roberts',
+  'turner',
+  'phillips',
+  'campbell',
+  'parker',
+  'evans',
+  'edwards',
+  'collins',
+  'stewart',
+  'morris',
+  'rogers',
+  'reed',
+  'cook',
+  'morgan',
+  'bell',
+  'murphy',
+  'bailey',
 ] as const;
 
 const EMAIL_DOMAINS = {
@@ -240,8 +312,7 @@ function buildPayment(customers: Customer[], created: number): Payment {
     status === 'refunded' || status === 'partially_refunded'
       ? new Date(Math.min(created + int(1, 72) * 3_600_000, Date.parse(ANCHOR))).toISOString()
       : null;
-  const amountRefunded =
-    status === 'refunded' ? amount : status === 'partially_refunded' ? Math.round(amount * pick([0.25, 0.5])) : 0;
+  const amountRefunded = status === 'refunded' ? amount : status === 'partially_refunded' ? Math.round(amount * pick([0.25, 0.5])) : 0;
 
   return {
     id: objectId('pi', '3'),
@@ -260,7 +331,13 @@ function buildPayment(customers: Customer[], created: number): Payment {
 }
 
 const FEE_FIXED: Readonly<Record<CurrencyCode, number>> = {
-  usd: 30, gbp: 20, eur: 25, brl: 39, cad: 30, aud: 30, jpy: 0,
+  usd: 30,
+  gbp: 20,
+  eur: 25,
+  brl: 39,
+  cad: 30,
+  aud: 30,
+  jpy: 0,
 };
 
 function buildDetails(payment: Payment): PaymentDetails {
@@ -340,13 +417,16 @@ function buildDetails(payment: Payment): PaymentDetails {
     statementDescriptor: 'CRAMLY.AI',
     fundsAvailableAt: collected ? new Date(created + 7 * 86_400_000).toISOString() : null,
     updatedAt: ordered[0]?.at ?? at(0),
-    issuer: payment.paymentMethod.type === 'ach_debit' ? (payment.paymentMethod.bankName ?? 'Bank') : pick(['JPMorgan Chase Bank, N.A.', 'Capital One, N.A.', 'Barclays Bank PLC', 'Itaú Unibanco S.A.', 'Wells Fargo Bank']),
-    origin: { usd: 'United States', gbp: 'United Kingdom', eur: 'Germany', brl: 'Brazil', cad: 'Canada', aud: 'Australia', jpy: 'Japan' }[payment.currency],
+    issuer:
+      payment.paymentMethod.type === 'ach_debit'
+        ? (payment.paymentMethod.bankName ?? 'Bank')
+        : pick(['JPMorgan Chase Bank, N.A.', 'Capital One, N.A.', 'Barclays Bank PLC', 'Itaú Unibanco S.A.', 'Wells Fargo Bank']),
+    origin: { usd: 'United States', gbp: 'United Kingdom', eur: 'Germany', brl: 'Brazil', cad: 'Canada', aud: 'Australia', jpy: 'Japan' }[
+      payment.currency
+    ],
     cvcCheck: payment.paymentMethod.type === 'ach_debit' ? 'Unavailable' : payment.declineReason === 'Incorrect CVC' ? 'Failed' : 'Passed',
     timeline: ordered.map((entry, index) => ({ ...entry, current: index === 0 })),
-    events: events
-      .map((event) => ({ id: `evt_${token(24)}`, ...event }))
-      .sort((a, b) => Date.parse(b.at) - Date.parse(a.at)),
+    events: events.map((event) => ({ id: `evt_${token(24)}`, ...event })).sort((a, b) => Date.parse(b.at) - Date.parse(a.at)),
     logs: logs.sort((a, b) => Date.parse(b.at) - Date.parse(a.at)),
     metadata: chance(0.35) ? { plan: pick(['starter', 'pro', 'team']), source: pick(['web', 'ios', 'android']) } : {},
   };

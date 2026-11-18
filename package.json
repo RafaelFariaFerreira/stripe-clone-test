@@ -13,10 +13,14 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "data": "pnpm --filter @stripe-clone/mock-data generate"
+    "data": "pnpm --filter @stripe-clone/mock-data generate",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "e2e": "pnpm --filter @stripe-clone/e2e test"
   },
   "devDependencies": {
     "turbo": "2.11.13",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "prettier": "3.8.1"
   }
 }

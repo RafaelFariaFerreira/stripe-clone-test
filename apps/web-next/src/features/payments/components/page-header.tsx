@@ -19,7 +19,12 @@ export function PaymentsPageHeader() {
       </div>
       <nav className="tabs" aria-label="Transactions">
         {['Payments', 'Payouts', 'Top-ups', 'Collected fees', 'Transfers', 'All activity'].map((tab) => (
-          <a key={tab} href={tab === 'Payments' ? '/payments' : '#'} className="tabs__tab" aria-current={tab === 'Payments' ? 'page' : undefined}>
+          <a
+            key={tab}
+            href={tab === 'Payments' ? '/payments' : '#'}
+            className="tabs__tab"
+            aria-current={tab === 'Payments' ? 'page' : undefined}
+          >
             {tab}
           </a>
         ))}
