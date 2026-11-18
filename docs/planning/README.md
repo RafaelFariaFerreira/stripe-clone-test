@@ -8,7 +8,7 @@ Planning package for a portfolio rebuild of two Stripe Dashboard screens, implem
 | Payments list (Transactions → Payments) | `/test/payments`                  |
 | Payment details                         | `/test/payments/:paymentIntentId` |
 
-No code is written at this stage. This folder is the source of truth for the build.
+These documents were written before the build and remain the source of truth for it; the implementation lives in `apps/` and `packages/`.
 
 ## Documents
 

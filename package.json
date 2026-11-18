@@ -16,7 +16,7 @@
     "data": "pnpm --filter @stripe-clone/mock-data generate",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "e2e": "pnpm --filter @stripe-clone/e2e test"
+    "e2e": "pnpm --filter @stripe-clone/e2e e2e"
   },
   "devDependencies": {
     "turbo": "2.11.13",

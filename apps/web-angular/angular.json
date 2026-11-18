@@ -30,10 +30,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "node_modules/@angular/cdk/overlay-prebuilt.css",
-              "src/styles.css"
-            ]
+            "styles": ["node_modules/@angular/cdk/overlay-prebuilt.css", "src/styles.css"]
           },
           "configurations": {
             "production": {

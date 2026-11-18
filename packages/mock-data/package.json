@@ -4,7 +4,9 @@
   "private": true,
   "description": "Deterministic generator for the Payments mock dataset (list JSON + lazily loaded detail shards).",
   "type": "module",
-  "files": ["data"],
+  "files": [
+    "data"
+  ],
   "exports": {
     "./payments.json": "./data/payments.json",
     "./data/*": "./data/*"

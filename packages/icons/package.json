@@ -13,7 +13,9 @@
       "default": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "generate": "node scripts/generate.mjs",
     "build": "node scripts/generate.mjs && tsc -p tsconfig.json",

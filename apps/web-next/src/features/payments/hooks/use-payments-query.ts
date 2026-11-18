@@ -5,7 +5,16 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 /** Keys that change *which* rows match; changing any of them returns to page 1. */
-const RESETS_PAGE: ReadonlyArray<keyof PaymentsQuery> = ['view', 'search', 'date', 'amount', 'currencies', 'statuses', 'methods', 'pageSize'];
+const RESETS_PAGE: ReadonlyArray<keyof PaymentsQuery> = [
+  'view',
+  'search',
+  'date',
+  'amount',
+  'currencies',
+  'statuses',
+  'methods',
+  'pageSize',
+];
 
 /**
  * The Payments list state lives in the URL. This hook parses it with the shared

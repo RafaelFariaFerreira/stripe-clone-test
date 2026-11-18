@@ -4,7 +4,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { parseQuery, serializeQuery, type PaymentsQuery } from '@stripe-clone/domain';
 
 /** Keys that change *which* rows match; changing any of them returns to page 1. */
-const RESETS_PAGE: ReadonlyArray<keyof PaymentsQuery> = ['view', 'search', 'date', 'amount', 'currencies', 'statuses', 'methods', 'pageSize'];
+const RESETS_PAGE: ReadonlyArray<keyof PaymentsQuery> = [
+  'view',
+  'search',
+  'date',
+  'amount',
+  'currencies',
+  'statuses',
+  'methods',
+  'pageSize',
+];
 
 /**
  * The Payments list state lives in the URL. Parses it with the shared domain

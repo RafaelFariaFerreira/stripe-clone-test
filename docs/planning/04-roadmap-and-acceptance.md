@@ -46,14 +46,14 @@ timeline and metadata (#3), filters in the URL (#4), column visibility/reorder (
 
 ## 4.3 Open decisions (with recommendation)
 
-| Topic                               | Options                                                                                 | Recommendation                                                                                                              |
-| ----------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Column header for the creation time | Reference says **"Date"**; brief bullet says "Created"                                  | Use **"Date"** (reviewers compare labels to the reference; the brief describes the data, not the label)                     |
-| Payment ID column position          | Reference image crops before an ID column; live Dashboard shows `ID` as the last column | Last column before `⋯`, label **"ID"** (live label), shortened chip                                                         |
-| Customer column                     | Reference: "Customer" (email)                                                           | Keep "Customer" with email, as in the reference                                                                             |
-| "Pending" status                    | Not visible in the reference rows                                                       | Neutral badge with clock icon, label "Pending"                                                                              |
-| Text search location                | Reference has only the global top-bar "Search"                                          | Top-bar search filters the table while on Payments (placeholder "Search"); no extra input, so the hierarchy stays identical |
-| Live sandbox banner and setup guide | Present in live test mode, absent in reference                                          | Not rendered                                                                                                                |
+| Topic                               | Options                                                                                 | Recommendation                                                                                                                     |
+| ----------------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Column header for the creation time | Reference says **"Date"**; brief bullet says "Created"                                  | Use **"Date"** (reviewers compare labels to the reference; the brief describes the data, not the label)                            |
+| Payment ID column position          | Reference image crops before an ID column; live Dashboard shows `ID` as the last column | Last column before `⋯`, labelled **"Payment ID"** (the brief's wording and the details page label), shortened chip. _Implemented._ |
+| Customer column                     | Reference: "Customer" (email)                                                           | Keep "Customer" with email, as in the reference                                                                                    |
+| "Pending" status                    | Not visible in the reference rows                                                       | Neutral badge with clock icon, label "Pending"                                                                                     |
+| Text search location                | Reference has only the global top-bar "Search"                                          | Top-bar search filters the table while on Payments (placeholder "Search"); no extra input, so the hierarchy stays identical        |
+| Live sandbox banner and setup guide | Present in live test mode, absent in reference                                          | Not rendered                                                                                                                       |
 
 ## 4.4 Pixel-perfect QA process
 

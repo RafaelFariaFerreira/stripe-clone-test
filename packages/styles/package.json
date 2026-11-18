@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "Design tokens and component CSS shared by the Next.js and Angular apps.",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "exports": {
     ".": "./src/index.css",
     "./*": "./src/*"
