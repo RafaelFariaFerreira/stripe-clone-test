@@ -15,7 +15,7 @@ pnpm --filter web-next lint
 
 ```
 src/
-├── app/                         Routes (server components): layout, /payments, /payments/[id]
+├── app/                         Routes: (dashboard)/payments, (dashboard)/payments/[id], /styleguide
 ├── components/
 │   ├── layout/                  App shell: sidebar, top bar, global search, navigation config
 │   └── ui/                      Primitives: Button, IconButton, Badge, Checkbox, Tooltip, Popover, Menu, Icon…
@@ -25,9 +25,17 @@ src/
 │   │   ├── hooks/               URL-backed query state (usePaymentsQuery)
 │   │   ├── components/          Header, status cards, filters, table, pagination, states
 │   │   └── columns.ts           Column model shared by header, cells and "Edit columns"
-│   └── payment-details/         Details page view, sections and skeleton
+│   ├── payment-details/         Details page view, sections and skeleton
+│   └── styleguide/              Design system page: catalog, live demos, build-time token reader
 └── lib/                         Query provider (IndexedDB persistence), hooks, utilities
 ```
+
+## Design system page
+
+`/styleguide` documents the tokens and every component for the team. Tokens are parsed from
+`packages/styles/src/tokens.css` at build time and the demos render the real components, so the page cannot drift
+from the code. Component entries live in `src/features/styleguide/catalog.ts`; update an entry whenever its
+component changes.
 
 ## Rendering and data
 

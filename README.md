@@ -10,6 +10,37 @@ one shared design system and one shared domain layer.
 | ----------------------------------------------------- | --------------------------------------------- | --------------------------------------------------- |
 | ![Details](docs/screenshots/payment-details-1920.png) | ![Filter](docs/screenshots/filter-status.png) | ![Mobile](docs/screenshots/payments-mobile-390.png) |
 
+## Live pages
+
+Hosted at **[stripeclone.rafaelferreira.blog](https://stripeclone.rafaelferreira.blog)**.
+
+| Page              | URL                                                                                                                   | What it shows                                                                                                                                                                                                              |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Payments          | [/payments](https://stripeclone.rafaelferreira.blog/payments)                                                         | The Payments screen: status views, filters, sortable and paginated table (`/` redirects here)                                                                                                                              |
+| Shareable view    | [/payments?status=failed&sort=-amount](https://stripeclone.rafaelferreira.blog/payments?status=failed&sort=-amount)   | Example of filters, sort and paging kept in the URL                                                                                                                                                                        |
+| Empty state       | [/payments?q=no-match](https://stripeclone.rafaelferreira.blog/payments?q=no-match)                                   | "No results" state with Clear all                                                                                                                                                                                          |
+| Payment details   | [/payments/pi_3WFgxRt8vB2wQjKozQkDRgR0](https://stripeclone.rafaelferreira.blog/payments/pi_3WFgxRt8vB2wQjKozQkDRgR0) | Timeline, breakdown, payment method, events, logs and metadata                                                                                                                                                             |
+| Unknown payment   | [/payments/pi_unknown](https://stripeclone.rafaelferreira.blog/payments/pi_unknown)                                   | Not-found state of the details route                                                                                                                                                                                       |
+| **Design system** | [/styleguide](https://stripeclone.rafaelferreira.blog/styleguide)                                                     | Style guide and component documentation for the team: tokens, typography, spacing, elevation, breakpoints, icons and every component with live demos, React and Angular usage, CSS classes, states and accessibility notes |
+
+![Design system page](docs/screenshots/styleguide-components.png)
+
+The Angular build serves the same routes (`/payments`, `/payments/:id`) from its own Railway service.
+
+## Documentation
+
+| Document                                                                   | Purpose                                                                           |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [Design system (live)](https://stripeclone.rafaelferreira.blog/styleguide) | The team reference, generated from the shared tokens and components               |
+| [Planning overview](docs/planning/README.md)                               | Scope, reference strategy and key decisions                                       |
+| [Style guide (planning)](docs/planning/01-style-guide.md)                  | Measured tokens, layout values, breakpoints, interaction states and verbatim copy |
+| [Component map](docs/planning/02-component-map.md)                         | What repeats on the screens, the component tree, props and states                 |
+| [Architecture](docs/planning/03-architecture.md)                           | Monorepo, data, caching, lazy loading, accessibility and code quality             |
+| [Roadmap and acceptance](docs/planning/04-roadmap-and-acceptance.md)       | Milestones, acceptance-criteria traceability and the QA process                   |
+| [Next.js app](apps/web-next/README.md)                                     | Structure, rendering and data strategy of the Next.js implementation              |
+| [Angular app](apps/web-angular/README.md)                                  | Structure and Angular-specific choices                                            |
+| [Reference captures](docs/reference)                                       | Reference image, live Dashboard captures, extracted icons and computed styles     |
+
 ## Features
 
 - **Table columns:** Amount formatted with its currency and ISO code, status badge (Succeeded, Pending,
@@ -162,3 +193,7 @@ repository root so the pnpm workspace installs once. Point each service at its c
 | Angular | `apps/web-angular/railway.json` | `pnpm turbo run build --filter=web-angular` | `npx serve -s` on the build output (single-page-app fallback) |
 
 Railway reads the Node version from `.nvmrc` / `engines` and uses pnpm from `packageManager`.
+
+The custom domain `stripeclone.rafaelferreira.blog` is attached to the Next.js service (Settings → Networking →
+Custom domain), with a `CNAME` record pointing to the target Railway provides. The same origin is set as
+`metadataBase` in `apps/web-next/src/app/layout.tsx`, so absolute metadata URLs resolve correctly.
