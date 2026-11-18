@@ -1,6 +1,7 @@
 import { toMajorUnits } from '../currency';
 import { addDays, endOfDay, fromIsoDay, startOfDay } from '../dates';
 import { PAYMENT_VIEWS } from '../status';
+import { matchesSearchTerms, parseSearch } from '../search/query';
 import type { Payment } from '../types';
 import type { AmountFilter, DateFilter, PaymentsQuery } from './types';
 
@@ -52,25 +53,6 @@ export function matchesAmount(payment: Payment, filter: AmountFilter): boolean {
 }
 
 /**
- * Text search across payment ID, customer email and card/bank last 4.
- * Case-insensitive; the `pi_` prefix is optional; whitespace is ignored at the ends.
- */
-export function matchesSearch(payment: Payment, search: string): boolean {
-  const term = search.trim().toLowerCase();
-  if (!term) return true;
-  if (/^\d{1,4}$/.test(term)) {
-    return payment.paymentMethod.last4.includes(term) || payment.id.toLowerCase().includes(term);
-  }
-  const id = payment.id.toLowerCase();
-  return (
-    id.includes(term) ||
-    id.replace(/^pi_/, '').includes(term) ||
-    payment.customer.email.toLowerCase().includes(term) ||
-    (payment.customer.name?.toLowerCase().includes(term) ?? false)
-  );
-}
-
-/**
  * Returns a predicate for every active filter of the query. The view card is
  * treated as one more status constraint and combines (AND) with the Status
  * filter, exactly like clicking a card while a status filter is applied.
@@ -81,7 +63,8 @@ export function createPaymentPredicate(query: PaymentsQuery, now: Date = new Dat
   const currencySet = query.currencies.length ? new Set(query.currencies) : null;
   const methodSet = query.methods.length ? new Set(query.methods) : null;
   const range = query.date ? resolveDateFilter(query.date, now) : null;
-  const { amount, search } = query;
+  const { amount } = query;
+  const searchTerms = parseSearch(query.search);
 
   return (payment) => {
     if (viewStatuses && !viewStatuses.includes(payment.status)) return false;
@@ -93,6 +76,6 @@ export function createPaymentPredicate(query: PaymentsQuery, now: Date = new Dat
       if (created < range.from || created > range.to) return false;
     }
     if (amount && !matchesAmount(payment, amount)) return false;
-    return matchesSearch(payment, search);
+    return matchesSearchTerms(payment, searchTerms, now);
   };
 }

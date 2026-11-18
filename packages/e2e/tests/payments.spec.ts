@@ -59,11 +59,14 @@ test.describe('Payments list', () => {
   test('searches by email and by last 4 digits', async ({ page }) => {
     await openPayments(page);
     const email = (await rows(page).first().locator('td').nth(6).innerText()).trim();
-    await page.getByRole('searchbox').fill(email);
+    const search = page.getByRole('combobox', { name: 'Search payments' });
+    await search.fill(email);
+    await search.press('Enter');
     await expect.poll(() => new URL(page.url()).searchParams.get('q')).toBe(email);
     for (const cell of await page.locator('tbody tr td:nth-child(7)').allInnerTexts()) expect(cell.trim()).toBe(email);
 
-    await page.getByRole('searchbox').fill('4242');
+    await search.fill('4242');
+    await search.press('Enter');
     await expect.poll(() => new URL(page.url()).searchParams.get('q')).toBe('4242');
   });
 

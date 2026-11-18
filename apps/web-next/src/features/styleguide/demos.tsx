@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  SUGGESTED_SEARCH_FILTERS,
   sortPayments,
   STATUS_META,
   toggleSort,
@@ -237,6 +238,33 @@ function FilterPillDemo() {
   );
 }
 
+/** Static preview of the search dropdown (the live one is in the top bar of /payments). */
+function SearchDemo() {
+  return (
+    <div className="global-search" style={{ width: 600, maxWidth: '100%', marginBottom: 290 }}>
+      <Icon name="search" size={12} />
+      <input className="global-search__input" placeholder="Search" aria-label="Search preview" readOnly />
+      <div className="search-popover" role="presentation">
+        <div className="search-popover__list">
+          <div className="search-popover__heading">Suggested filters</div>
+          {SUGGESTED_SEARCH_FILTERS.map((filter, index) => (
+            <div key={filter.key} className="search-option" aria-selected={index === 1}>
+              <div className="search-option__card">
+                <span className="search-option__key">{filter.key}:</span>
+                <span className="search-option__example">{filter.example}</span>
+                <span className="search-option__description">{filter.description}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="search-popover__footer">
+          <span className="search-popover__footer-button">View more filters</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function StatusCardsDemo() {
   const [view, setView] = useState<PaymentsView>('all');
   return <StatusCards active={view} onSelect={setView} />;
@@ -425,6 +453,8 @@ export function ComponentDemo({ id, iconNames }: { id: string; iconNames: readon
       return <IconsDemo names={iconNames} />;
     case 'filter-pill':
       return <FilterPillDemo />;
+    case 'search':
+      return <SearchDemo />;
     case 'status-cards':
       return <StatusCardsDemo />;
     case 'tabs-banner':

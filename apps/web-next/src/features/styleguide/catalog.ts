@@ -194,6 +194,31 @@ export const COMPONENTS: readonly ComponentDoc[] = [
     a11y: 'role="dialog" popover, focus moves inside and returns to the pill; Escape closes.',
   },
   {
+    id: 'search',
+    name: 'GlobalSearch (search bar)',
+    group: 'Payments',
+    summary:
+      'Top-bar combobox modelled on the Dashboard search. On focus it suggests filters (is:, last4:, date:, email:, status:, profile:; "View more filters" reveals amount:, brand:, created:, currency:, name:, type:). While typing it completes keys and values, previews up to 8 matching payments and offers "Show only payment results for …". Enter applies the query to the table through ?q=. The language (filters, quotes, -negation, > < and .. ranges) lives in @stripe-clone/domain (parseSearch, matchesSearch, buildSearchDropdown).',
+    react: {
+      importPath: "import { GlobalSearch } from '@/components/layout/global-search';",
+      usage:
+        '<GlobalSearch />\n\n// Query examples\nstatus:failed currency:brl\namount:10..20 -status:refunded\ndate:"last week" email:jenny',
+    },
+    angular: { selector: 'app-global-search', usage: '<app-global-search />' },
+    classes: [
+      '.global-search',
+      '.search-popover',
+      '.search-popover__heading',
+      '.search-option',
+      '.search-option__key',
+      '.search-result',
+      '.search-popover__footer',
+    ],
+    states: ['closed', 'suggested filters', 'expanded filters', 'typing (completions + results)', 'no results', 'option highlighted'],
+    props: [],
+    a11y: 'role="combobox" with aria-expanded / aria-activedescendant over a role="listbox"; ArrowUp/Down, Enter, Escape, Tab; "/" focuses it. Highlight follows keyboard or real pointer movement.',
+  },
+  {
     id: 'status-cards',
     name: 'StatusCards',
     group: 'Payments',

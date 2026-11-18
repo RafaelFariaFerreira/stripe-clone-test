@@ -23,6 +23,9 @@ const shortDateWithYear = new Intl.DateTimeFormat('en-US', {
   minute: '2-digit',
 });
 
+const shortDay = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' });
+const shortDayWithYear = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
 const numericDateTime = new Intl.DateTimeFormat('en-US', {
   year: '2-digit',
   month: 'numeric',
@@ -55,6 +58,12 @@ export function formatTableDate(iso: string, now: Date = new Date()): string {
   const date = new Date(iso);
   const formatter = date.getFullYear() === now.getFullYear() ? shortDate : shortDateWithYear;
   return formatter.format(date);
+}
+
+/** Search results format: `Nov 18` (year added when it differs from the current one). */
+export function formatShortDay(iso: string, now: Date = new Date()): string {
+  const date = new Date(iso);
+  return (date.getFullYear() === now.getFullYear() ? shortDay : shortDayWithYear).format(date);
 }
 
 /** Events and logs format: `11/18/26, 2:43:22 PM`. */

@@ -16,3 +16,4 @@ export * from './query/sort';
 export * from './query/apply';
 export * from './query/url';
 export * from './query/summary';
+export * from './search';

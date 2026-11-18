@@ -346,3 +346,161 @@
     }
   }
 }
+
+/*
+ * Search dropdown, measured on the live Dashboard: a 604px card 8px below the
+ * 36px input, popover shadow, 32px option rows with an 8px-radius highlight,
+ * key chips, and an offset-background footer.
+ *
+ * <div class="search-popover" role="listbox">
+ *   <div class="search-popover__list">
+ *     <div class="search-popover__heading">Suggested filters</div>
+ *     <div class="search-option" role="option"><div class="search-option__card">…</div></div>
+ *   </div>
+ *   <div class="search-popover__footer"><button class="search-popover__footer-button">View more filters</button></div>
+ * </div>
+ */
+@layer components {
+  .search-popover {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: -2px;
+    right: -2px;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    max-height: min(520px, calc(100vh - 80px));
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-page);
+    box-shadow: var(--shadow-popover);
+    color: var(--color-text-default);
+    overflow: hidden;
+    animation: popover-in var(--motion-base) var(--motion-easing);
+  }
+  .search-popover__list {
+    flex: 1;
+    padding: var(--space-1) 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .search-popover__heading {
+    padding: var(--space-1) 22px;
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-20);
+  }
+  .search-popover__divider {
+    height: 1px;
+    margin: var(--space-1) 0;
+    background: var(--color-border-subtle);
+  }
+  .search-popover__empty {
+    padding: var(--space-1) 22px var(--space-2);
+    color: var(--color-text-secondary);
+  }
+  .search-popover__footer {
+    display: flex;
+    padding: var(--space-2);
+    background: var(--color-bg-offset);
+  }
+  .search-popover__footer-button {
+    height: 20px;
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-md);
+    color: var(--color-text-brand);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-20);
+  }
+  .search-popover__footer-button:hover,
+  .search-popover__footer-button[aria-selected='true'] {
+    color: var(--color-text-default);
+  }
+
+  .search-option {
+    padding: 2px var(--space-3);
+    cursor: pointer;
+  }
+  .search-option__card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 28px;
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-lg);
+    white-space: nowrap;
+  }
+  .search-option:hover .search-option__card,
+  .search-option[aria-selected='true'] .search-option__card {
+    background: var(--color-bg-offset);
+  }
+  .search-option__key {
+    flex-shrink: 0;
+    padding: 1px var(--space-2);
+    border-radius: var(--radius-sm);
+    background: var(--color-neutral-bg);
+    color: var(--color-neutral-text);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-16);
+  }
+  .search-option__example {
+    overflow: hidden;
+    color: var(--color-text-subdued);
+    text-overflow: ellipsis;
+  }
+  .search-option__description {
+    margin-left: auto;
+    padding-left: var(--space-4);
+    overflow: hidden;
+    color: var(--color-text-secondary);
+    text-overflow: ellipsis;
+  }
+  .search-option__query {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .search-option__query strong {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* Payment result: icon-only status badge | amount | description | short date. */
+  .search-result {
+    display: grid;
+    grid-template-columns: 26px 145px minmax(0, 1fr) auto;
+    column-gap: var(--space-3);
+    align-items: center;
+    width: 100%;
+  }
+  .search-result .badge {
+    justify-content: center;
+    width: 26px;
+    padding: 0;
+  }
+  .search-result__description,
+  .search-result__amount {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .search-result__date {
+    text-align: right;
+  }
+
+  @media (max-width: 767.98px) {
+    .search-popover {
+      position: fixed;
+      top: calc(var(--layout-topbar-height) - 4px);
+      left: var(--space-2);
+      right: var(--space-2);
+    }
+    .search-option__description {
+      display: none;
+    }
+    .search-result {
+      grid-template-columns: 26px auto minmax(0, 1fr);
+    }
+    .search-result__description {
+      display: none;
+    }
+  }
+}

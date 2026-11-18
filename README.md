@@ -57,7 +57,12 @@ The Angular build serves the same routes (`/payments`, `/payments/:id`) from its
   - Status (multi-select)
   - Payment method (Card, ACH Direct Debit, Wallet; multi-select)
   - Quick status views (All, Succeeded, Refunded, Disputed, Failed, Uncaptured)
-  - Text search by payment ID, email or last 4 digits (`/` focuses it)
+  - A Dashboard-style search bar (`/` focuses it): suggested filters on focus (`is:`, `last4:`, `date:`,
+    `email:`, `status:`, `profile:`, and more), key and value completion, a live preview of up to 8
+    matching payments, and "Show only payment results". Free text matches payment ID, email, name,
+    last 4 digits, description and amount. Filters can be combined, quoted, negated with `-`, and use
+    `>`, `<` or `..` ranges (`status:failed currency:brl`, `amount:10..20 -status:refunded`,
+    `date:"last week"`). Enter applies the query to the table.
 - **Shareable state:** every filter, sort and page lives in the URL.
 - **States:** loading skeletons that reserve the final layout, an empty state with the Dashboard's copy,
   error states with retry, and an unknown-payment page.
