@@ -25,7 +25,8 @@ Hosted at **[stripeclone.rafaelferreira.blog](https://stripeclone.rafaelferreira
 
 ![Design system page](docs/screenshots/styleguide-components.png)
 
-The Angular build serves the same routes (`/payments`, `/payments/:id`) from its own Railway service.
+The Angular build serves the same routes (`/payments`, `/payments/:id`) from its own Railway service at
+[web-angular-production.up.railway.app](https://web-angular-production.up.railway.app/payments).
 
 ## Documentation
 
@@ -201,17 +202,20 @@ use their native UI font, so glyph widths differ slightly while the layout stays
 
 ## Deployment (Railway)
 
-Both apps deploy to [Railway](https://railway.com) as two services of the same project, built from the
-repository root so the pnpm workspace installs once. Point each service at its config file
-(Settings → Config-as-code):
+Both apps deploy to [Railway](https://railway.com) as two services of the `stripe_clone` project. Each
+service is connected to this repository and redeploys on every push to `main`. Builds run from the
+repository root so the pnpm workspace installs once. Railway has deprecated per-service `railway.json`
+files, so the build and start commands are set on each service (Settings → Build / Deploy):
 
-| Service | Config file                     | Build                                       | Start                                                         |
-| ------- | ------------------------------- | ------------------------------------------- | ------------------------------------------------------------- |
-| Next.js | `apps/web-next/railway.json`    | `pnpm turbo run build --filter=web-next`    | `pnpm --filter web-next start` (listens on `$PORT`)           |
-| Angular | `apps/web-angular/railway.json` | `pnpm turbo run build --filter=web-angular` | `npx serve -s` on the build output (single-page-app fallback) |
+| Service       | URL                                                                                    | Build                                       | Start                                                                                        |
+| ------------- | -------------------------------------------------------------------------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `web-next`    | [stripeclone.rafaelferreira.blog](https://stripeclone.rafaelferreira.blog)             | `pnpm turbo run build --filter=web-next`    | `pnpm --filter web-next start`                                                               |
+| `web-angular` | [web-angular-production.up.railway.app](https://web-angular-production.up.railway.app) | `pnpm turbo run build --filter=web-angular` | `npx --yes serve@14.2.8 -s apps/web-angular/dist/web-angular/browser -l tcp://0.0.0.0:$PORT` |
 
+Both services use the Railpack builder, a `/payments` health check, restart on failure, and `PORT=8080`.
 Railway reads the Node version from `.nvmrc` / `engines` and uses pnpm from `packageManager`.
 
-The custom domain `stripeclone.rafaelferreira.blog` is attached to the Next.js service (Settings → Networking →
-Custom domain), with a `CNAME` record pointing to the target Railway provides. The same origin is set as
-`metadataBase` in `apps/web-next/src/app/layout.tsx`, so absolute metadata URLs resolve correctly.
+The custom domain `stripeclone.rafaelferreira.blog` is attached to the `web-next` service. In Cloudflare, a
+proxied `CNAME` record points to the target Railway provides, and a `_railway-verify` `TXT` record proves
+ownership. The same origin is set as `metadataBase` in `apps/web-next/src/app/layout.tsx`, so absolute
+metadata URLs resolve correctly.
